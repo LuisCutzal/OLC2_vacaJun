@@ -1,8 +1,8 @@
     start
-        = _ instructions:instructions { return instructions; }
+        = _ instructions:instructions newline* { return instructions; }
 
     instructions
-        = head:instruccion tail:(_ instruccion)* { return [head].concat(tail.map(t => t[1])); }
+        = head:instruccion tail:(_ instruccion)*  { return [head].concat(tail.map(t => t[1])); } 
 
     instruccion
         = comment
@@ -86,6 +86,8 @@
         
     Integer "integer"
     = _ [0-9]+ { return parseInt(text(), 10); }
+    
+    newline = "'\r\n" / "\n" / "\r"
 
     _ "whitespace"
         = [ \t\n\r]*
