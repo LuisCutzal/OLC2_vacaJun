@@ -55,7 +55,7 @@
         / direction:Hexadecimal { return direction; }
 
     nemonic
-    = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC"  { return text();}
+    = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" { return text();}
 
 
     label_name "label_name"
