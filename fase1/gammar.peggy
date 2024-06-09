@@ -55,7 +55,17 @@
         / direction:Hexadecimal { return direction; }
 
     nemonic
-    = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" { return text();}
+    = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" 
+    / "ADC" / "SBC" / "RSB" / "AND" / "ORR" / "EOR" / "BIC" / "ASR" / "LSR" / "LSL" / "ROR" / "RRX" //Aritméticos y Lógicos
+    /"MVN" / "LDRB" / "STRB" / "LDRH" / "STRH" / "LDRSH" / "LDRSB"  //Movimiento y Transferencia de Datos
+    / "BX" / "BLX" //Control de Flujo
+    / "MUL" / "MLA" / "MLS" / "UMULL" / "UMLAL" / "SMULL" / "SMLAL" //Multiplicación
+    / "QADD" / "QSUB" / "QDADD" / "QDSUB" //Instrucciones de Saturación
+    / "VADD" / "VSUB" / "VMUL" / "VDIV" / "VMLA" / "VMLS" / "VMOV" / "VCVT" //Instrucciones de Punto Flotante (si el procesador tiene FPU)
+    / "MCR" / "MRC" / "CDP" / "LDC" / "STC" //Coprocesadores e Instrucciones de Sistema
+    / "SWP" / "SWPB" / "LDREX" / "STREX" / "CLREX" //Instrucciones de Sincronización
+    / "REV" / "REV16" / "REVSH" / "BKPT" / "CLZ" / "USAD8" / "USADA8" //Instrucciones Misceláneas
+    { return text();}
 
 
     label_name "label_name"
