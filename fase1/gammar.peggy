@@ -16,7 +16,8 @@
         / ";" text:string { return { type: "comment", comment: text }; }
 
     operation
-        = nemonic:nemonic _ destiny:destiny "," _ source:source { return { type: nemonic , propositoGeneral: destiny, value: source }; }
+        = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { type: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
+        / nemonic:nemonic _ destiny:destiny "," _ source:source { return { type: nemonic , propositoGeneral: destiny, value: source }; }
         / nemonic:nemonic _ source:source { return { type: nemonic , value: source }; }
         
 
