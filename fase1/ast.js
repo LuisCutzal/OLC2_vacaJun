@@ -5,6 +5,7 @@ document.getElementById("x").addEventListener("keydown", function(e) {
         x = document.getElementById("x").value;
         var container = document.getElementById("mynetwork");
         var DOTstring = PEG.parse(x);
+        console.log(DOTstring);
         var parsedData = vis.parseDOTNetwork(DOTstring);
         var data = {
             nodes: parsedData.nodes,
