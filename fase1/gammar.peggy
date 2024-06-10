@@ -8,8 +8,8 @@
         = comment
         / operation
         / directive
-        / Label_ref
-        / Label_def
+        / label_ref
+        / label_def
 
     comment
         = "//" text:string { return { type: "comment", comment: text }; }
@@ -25,10 +25,10 @@
         = "." directive_name:directive_name { return { type: "directive", name: directive_name }; }
         
 
-    Label_ref
-        = name_ref:label_name ":" { return { type: "Label_ref", name: name_ref }; }
+    label_ref
+        = name_ref:label_name ":" { return { type: "label_ref", name: name_ref }; }
         
-    Label_def
+    label_def
         = _ name:label_name {return {type: "label_def", name: name}}
 
 
@@ -46,14 +46,14 @@
             }
         }
         / register:label_name { return register; }
-        / "[" direction:Hexadecimal "]" { return "[" + direction + "]"; }
+        / "[" direction:number "]" { return "[" + direction + "]"; }
 
     source
-        = "#" value:Double { return value; }
-        /  "#" value:Integer { return value; }
+        = "#" value:double { return value; }
+        /  "#" value:number { return value; }
         / register:label_name { return register; }
         / "[" register:label_name "]" { return "[" + register + "]"; }
-        / direction:Hexadecimal { return direction; }
+        / direction:number { return direction; }
 
     nemonic
     = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" 
@@ -68,11 +68,13 @@
     / "REV" / "REV16" / "REVSH" / "BKPT" / "CLZ" / "USAD8" / "USADA8" //Instrucciones Misceláneas
     { return text();}
 
-
     label_name "label_name"
         =[a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
-    Hexadecimal "hexadecimal"
+    double "double"
+        = _ [0-9]+ "." [0-9]+ { return parseFloat(text()); }
+
+    number "number"
         = "0x" hex:[a-fA-F0-9]+ { return parseInt(hex.join(""), 16) }
         / hex:[0-9a-fA-F]+ "h" { return parseInt(hex.join(""), 16) }
         / dec:[0-9]+ { return parseInt(dec.join(""), 10) }
@@ -80,13 +82,7 @@
 
     string "string"
         = [^\n]* { return text().trim(); }
-        
-    Double "double"
-        = _ [0-9]+ "." [0-9]+ { return parseFloat(text()); }
-        
-    Integer "integer"
-    = _ [0-9]+ { return parseInt(text(), 10); }
-    
+                  
     newline = "'\r\n" / "\n" / "\r"
 
     _ "whitespace"
