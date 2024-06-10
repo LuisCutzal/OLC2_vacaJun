@@ -32,6 +32,8 @@ invalid
 comment
     = "//" text:string { return { type: "comment", comment: text }; }
     / ";" text:string { return { type: "comment", comment: text }; }
+    //block comment
+    / "/*" text:string "*/" { return { type: "comment", comment: text }; }
 
 operation
     = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { type: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
@@ -61,14 +63,14 @@ destiny
         }
     }
     / register:label_name { return register; }
-    / "[" direction:Hexadecimal "]" { return "[" + direction + "]"; }
+    / "[" direction:number "]" { return "[" + direction + "]"; }
 
 source
-    = "#" value:Double { return value; }
-    /  "#" value:Integer { return value; }
+    = "#" value:double { return value; }
+    /  "#" value:number { return value; }
     / register:label_name { return register; }
     / "[" register:label_name "]" { return "[" + register + "]"; }
-    / direction:Hexadecimal { return direction; }
+    / direction:number { return direction; }
 
 nemonic
 = "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" 
@@ -85,7 +87,7 @@ nemonic
 label_name "label_name"
     =[a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
-Hexadecimal "hexadecimal"
+number "number"
     = "0x" hex:[a-fA-F0-9]+ { return parseInt(hex.join(""), 16) }
     / hex:[0-9a-fA-F]+ "h" { return parseInt(hex.join(""), 16) }
     / dec:[0-9]+ { return parseInt(dec.join(""), 10) }
@@ -94,11 +96,8 @@ Hexadecimal "hexadecimal"
 string "string"
     = [^\n]* { return text().trim(); }
     
-Double "double"
+double "double"
     = _ [0-9]+ "." [0-9]+ { return parseFloat(text()); }
-    
-Integer "integer"
-= _ [0-9]+ { return parseInt(text(), 10); }
 
 newline = "'\r\n" / "\n" / "\r"
 
