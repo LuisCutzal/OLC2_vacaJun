@@ -21,8 +21,6 @@ instruction
     / directive
     / label_ref
     / label_def
-    / directive
-    / operation
     / invalid
 
 invalid
