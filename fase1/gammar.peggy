@@ -10,21 +10,23 @@
 }
 
 start
-    = _ instructions:instructions newline* { return { instructions, errors }; }
+    = _ instructions:instructions _ newline* { return { instructions, errors }; }
 
 instructions
-    = head:instruccion tail:(_ instruccion)*  { return [head].concat(tail.map(t => t[1])); } 
+    = head:instruction tail:(_ instruction)*  { return [head].concat(tail.map(t => t[1])); } 
 
-instruccion
+instruction
     = comment
     / operation
     / directive
-    / Label_ref
-    / Label_def
+    / label_ref
+    / label_def
+    / directive
+    / operation
     / invalid
 
 invalid
-    = !comment !operation !directive !Label_ref !Label_def !newline . {
+    = !comment !operation !directive !label_ref !label_def !newline . {
         errors.push(buildSyntaxError("Invalid token", location(), text()));
         return null; // Continuar con el análisis
     }
@@ -39,44 +41,36 @@ block_comment
   = (!"*/" .)* { return text(); }
 
 operation
-    = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { type: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
-    / nemonic:nemonic _ destiny:destiny "," _ source:source { return { type: nemonic , destiny: destiny, value: source }; }
-    / nemonic:nemonic _ source:source { return { type: nemonic , value: source }; }
+    = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { nemonic: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
+    / nemonic:nemonic _ destiny:destiny "," _ source:source { return { nemonic: nemonic , destiny: destiny, value: source }; }
+    / nemonic:nemonic _ source:source _ { return { nemonic: nemonic , value: source }; }
 
 directive
     = "." directive_name:directive_name _ value:number? { return { type: "directive", name: directive_name, value: value || null }; }
 
-Label_ref
-    = name_ref:label_name ":" { return { type: "Label_ref", name: name_ref }; }
+label_ref
+    = _ name:identifier ":" _ { return { type: "label_ref", name: name }; }
     
-Label_def
-    = _ name:label_name {return {type: "label_def", name: name}}
+label_def
+    = _ name:identifier _ {return {type: "label_def", name: name}}
 
 directive_name
     = "ascii" / "asciz" / "byte" / "word" / "dword" / "align" / "space" / "global" / "section" / "text" / "data" / "bss" / "equ" / "end"
 
 destiny
-    = "x" index:[0-9]+ {
-        const value = parseInt(index.join(''), 10);
-        if (value >= 0 && value <= 31) {
-            return "x" + value;
-        } else {
-            errors.push(buildSyntaxError("Índice de destiny fuera de rango", location(), text()));
-            return null; // Continuar con el análisis
-        }
-    }
-    / register:label_name { return register; }
+    = register:register { return register; }
+    / identifier:identifier { return register; }
     / "[" direction:number "]" { return "[" + direction + "]"; }
 
 source
     = "#" value:double { return value; }
     /  "#" value:number { return value; }
     / "#" char:char { return char; }
-    / register:label_name { return register; }
-    / "=" label_name:label_name { return label_name; }
-    / "[" register:label_name "]" { return "[" + register + "]"; }
+    / identifier:identifier { return identifier; }
+    / register:register { return register; }
+    / "=" identifier:identifier { return identifier; }
+    / "[" register:register "]" { return "[" + register + "]"; }
     / direction:number { return direction; }
-    / label_name:label_name { return label_name; }
 
 nemonic
     = [a-zA-Z]+ {
@@ -96,7 +90,40 @@ nemonic
         }
     }
 
-label_name "label_name"
+register "register" 
+    = "x" reg:[0-9]+ {
+        const value = parseInt(reg.join(''), 10);
+        if (value >= 0 && value <= 31) {
+            return "x" + value;
+        } else {
+            errors.push(buildSyntaxError("Índice de registro fuera de rango", location(), text()));
+            return null; // Continuar con el análisis
+        }
+    }
+    / "w" reg:[0-9]+ {
+        const value = parseInt(reg.join(''), 10);
+        if (value >= 0 && value <= 31) {
+            return "w" + value;
+        } else {
+            errors.push(buildSyntaxError("Índice de registro fuera de rango", location(), text()));
+            return null; // Continuar con el análisis
+        }
+    }
+    / "v" reg:[0-9]+ {
+        const value = parseInt(reg.join(''), 10);
+        if (value >= 0 && value <= 31) {
+            return "v" + value;
+        } else {
+            errors.push(buildSyntaxError("Índice de registro fuera de rango", location(), text()));
+            return null; // Continuar con el análisis
+        }
+    }
+    / "sp" { return "sp" }
+    / "lr" { return "lr" }
+    / "pc" { return "pc" }
+    / identifier:identifier { return identifier; }
+
+identifier "identifier"
     =[a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
 number "number"
@@ -114,7 +141,7 @@ string "string"
 double "double"
     = _ [0-9]+ "." [0-9]+ { return parseFloat(text()); }
 
-newline = "'\r\n" / "\n" / "\r"
+newline = "\r\n" / "\n" / "\r"
 
 _ "whitespace"
     = [ \t\n\r]*
