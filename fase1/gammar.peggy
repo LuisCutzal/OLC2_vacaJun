@@ -40,11 +40,11 @@ block_comment
 
 operation
     = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { type: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
-    / nemonic:nemonic _ destiny:destiny "," _ source:source { return { type: nemonic , propositoGeneral: destiny, value: source }; }
+    / nemonic:nemonic _ destiny:destiny "," _ source:source { return { type: nemonic , destiny: destiny, value: source }; }
     / nemonic:nemonic _ source:source { return { type: nemonic , value: source }; }
 
 directive
-    = "." directive_name:directive_name { return { type: "directive", name: directive_name }; }
+    = "." directive_name:directive_name _ value:number? { return { type: "directive", name: directive_name, value: value || null }; }
 
 Label_ref
     = name_ref:label_name ":" { return { type: "Label_ref", name: name_ref }; }
@@ -71,21 +71,30 @@ destiny
 source
     = "#" value:double { return value; }
     /  "#" value:number { return value; }
+    / "#" char:char { return char; }
     / register:label_name { return register; }
+    / "=" label_name:label_name { return label_name; }
     / "[" register:label_name "]" { return "[" + register + "]"; }
     / direction:number { return direction; }
+    / label_name:label_name { return label_name; }
 
 nemonic
-= "ADD" / "SUB" / "MOV" / "LDR" / "STR" / "B" / "BL" / "RET" / "CMP" / "NOP" / "SVC" / "MSR" / "MRS" 
-/ "ADC" / "SBC" / "RSB" / "AND" / "ORR" / "EOR" / "BIC" / "ASR" / "LSR" / "LSL" / "ROR" / "RRX" //Aritméticos y Lógicos
-/ "MVN" / "LDRB" / "STRB" / "LDRH" / "STRH" / "LDRSH" / "LDRSB"  //Movimiento y Transferencia de Datos
-/ "BX" / "BLX" //Control de Flujo
-/ "MUL" / "MLA" / "MLS" / "UMULL" / "UMLAL" / "SMULL" / "SMLAL" //Multiplicación
-/ "QADD" / "QSUB" / "QDADD" / "QDSUB" //Instrucciones de Saturación
-/ "VADD" / "VSUB" / "VMUL" / "VDIV" / "VMLA" / "VMLS" / "VMOV" / "VCVT" //Instrucciones de Punto Flotante (si el procesador tiene FPU)
-/ "MCR" / "MRC" / "CDP" / "LDC" / "STC" //Coprocesadores e Instrucciones de Sistema
-/ "SWP" / "SWPB" / "LDREX" / "STREX" / "CLREX" //Instrucciones de Sincronización
-/ "REV" / "REV16" / "REVSH" / "BKPT" / "CLZ" / "USAD8" / "USADA8" //Instrucciones Misceláneas
+    = [a-zA-Z]+ {
+        const textValue = text().toUpperCase();
+        const validNemonics = [
+            "ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "RET", "CMP", "NOP", "SVC", "MSR", "MRS",
+            "ADC", "SBC", "RSB", "AND", "ORR", "EOR", "BIC", "ASR", "LSR", "LSL", "ROR", "RRX", 
+            "MVN", "LDRB", "STRB", "LDRH", "STRH", "LDRSH", "LDRSB", "BX", "BLX", "MUL", "MLA", 
+            "MLS", "UMULL", "UMLAL", "SMULL", "SMLAL", "QADD", "QSUB", "QDADD", "QDSUB", "VADD", 
+            "VSUB", "VMUL", "VDIV", "VMLA", "VMLS", "VMOV", "VCVT", "MCR", "MRC", "CDP", "LDC", 
+            "STC", "SWP", "SWPB", "LDREX", "STREX", "CLREX", "REV", "REV16", "REVSH", "BKPT", 
+            "CLZ", "USAD8", "USADA8", "BNE", "BEQ", "BPL", "BMI", "BVC", "BVS", "BCC", "BCS",
+        ];
+
+        if (validNemonics.includes(textValue)) {
+            return textValue.toLowerCase();
+        }
+    }
 
 label_name "label_name"
     =[a-zA-Z_][a-zA-Z0-9_]* { return text(); }
@@ -95,6 +104,9 @@ number "number"
     / hex:[0-9a-fA-F]+ "h" { return parseInt(hex.join(""), 16) }
     / dec:[0-9]+ { return parseInt(dec.join(""), 10) }
     / bin:"0b"[01]+ { return parseInt(bin.join(""), 2) }
+
+char 'char'
+    = "'"[^']"'" { return text().trim(); }
 
 string "string"
     = [^\n]* { return text().trim(); }
