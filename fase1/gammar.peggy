@@ -24,8 +24,12 @@ instruction
     / invalid
 
 invalid
-    = !comment !operation !directive !label_ref !label_def !newline . {
-        errors.push(buildSyntaxError("Invalid token", location(), text()));
+    =  !directive_name !nemonic  !number !string !double !newline !_ . {
+        errors.push(buildSyntaxError("Invalid token", location(), text(), "Léxico"));
+        return null; // Continuar con el análisis
+    	}
+    / !comment !block_comment !operation !directive !label_ref !label_def !destiny !source. {
+        errors.push(buildSyntaxError("Invalid Sintax", location(), text(), "Sintáctico"));
         return null; // Continuar con el análisis
     }
 

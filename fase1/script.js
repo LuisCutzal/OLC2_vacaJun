@@ -77,23 +77,42 @@ const download = (name, content) => {
     link.click()
 }
 
+
+function isLexicalError(e) {
+    const validIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+    const validInteger = /^[0-9]+$/;
+    const validRegister = /^[a-zA-Z][0-9]+$/;
+    const validCharacter = /^[a-zA-Z0-9_$,\[\]#"]$/;
+    if (e.found) {
+        if (!validIdentifier.test(e.found) &&
+            !validInteger.test(e.found) &&
+            !validRegister.test(e.found) &&
+            !validCharacter.test(e.found)) {
+            return true; // Error léxico
+        }
+    }
+    return false; // Error sintáctico
+}
+
 const analysis = async () => {
     const text = Arm64Editor.getValue();
     try {
         let resultado = PEG.parse(text);
+        // consoleResult.setValue(resultado.toString());
+        console.log(resultado)
         consoleResult.setValue("VALIDO");
-    } catch (error) {
-        consoleResult.setValue(error.message);
-
-        if (e instanceof FASE1.SyntaxError) {
+    } catch (e) {
+        console.log(PEG)
+        if (e instanceof PEG.SyntaxError) {
             if (isLexicalError(e)) {
-                consoleResult.setValue("Error Léxico" + e.message);
-
+                consoleResult.setValue('Error Léxico: ' + e.message);
+                console.log(e.message)
             } else {
-                consoleResult.setValue("Error Sintáctico" + e.message);
+                consoleResult.setValue('Error Sintáctico: ' + e.message);
+                console.log(e.message)
             }
         } else {
-            consoleResult.setValue("Error desconocido", e);
+            console.error('Error desconocido:', e);
         }
     }
 }
