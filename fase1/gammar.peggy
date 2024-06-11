@@ -33,7 +33,10 @@ comment
     = "//" text:string { return { type: "comment", comment: text }; }
     / ";" text:string { return { type: "comment", comment: text }; }
     //block comment
-    / "/*" text:string "*/" { return { type: "comment", comment: text }; }
+    / "/*" text:block_comment "*/" { return { type: "comment", comment: text }; }
+
+block_comment
+  = (!"*/" .)* { return text(); }
 
 operation
     = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { type: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
