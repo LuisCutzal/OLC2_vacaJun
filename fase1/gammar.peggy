@@ -82,7 +82,7 @@ nemonic
     = [a-zA-Z]+ {
         const textValue = text().toUpperCase();
         const validNemonics = [
-            "ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "RET", "CMP", "NOP", "SVC", "MSR", "MRS",
+            "ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "RET", "BLT" , "BGT" , "CMP", "NOP", "SVC", "MSR", "MRS",
             "ADC", "SBC", "RSB", "AND", "ORR", "EOR", "BIC", "ASR", "LSR", "LSL", "ROR", "RRX", 
             "MVN", "LDRB", "STRB", "LDRH", "STRH", "LDRSH", "LDRSB", "BX", "BLX", "MUL", "MLA", 
             "MLS", "UMULL", "UMLAL", "SMULL", "SMLAL", "QADD", "QSUB", "QDADD", "QDSUB", "VADD", 
