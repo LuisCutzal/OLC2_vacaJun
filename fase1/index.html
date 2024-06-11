@@ -1,17 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
-    <script type="text/javascript" src="parser.js"></script>
-    <script type="text/javascript" src="vis-network.min.js"></script>
-    <style>
-        body { text-align: center; }
-    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ============================= MATERIALIZE ============================== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- ============================= MATERIAL ICONS ============================== -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- ============================= DATA TABLE ============================== -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <!-- ========================== JQUERY ============================ -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- ========================== MATERIALIZE ============================ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- ============================= DATA TABLE ============================== -->
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <!-- Scripts for Codemirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"
+        integrity="sha512-xwrAU5yhWwdTvvmMNheFn9IyuDbl/Kyghz2J3wQRDR8tyNmT8ZIYOd0V3iPYY/g4XdNPy0n/g0NvqGu9f0fPJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/mode/simple.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/rust/rust.min.js"
+        integrity="sha512-g3Nhw36S0p4ZJQcky87D5M+vZbFvLrgsHWYltUy5IW0zKbvi8GlPRjJSo2CyUyQiU01Ier7u+rBABDs3BawKyQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Styles for Codemirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+        integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Theme moxer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/moxer.min.css"
+        integrity="sha512-zrCGHGmTpiZpzVJ6BdiDfsUT6t8+oOKmOtfU82GhBo/7sk/cns7phhKXSWmGH6uACPqgjP8QmgczNBY7HMB9TQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>OLC2-FASE1</title>
+    <link rel="stylesheet" href="./style.css">
+
 </head>
+
 <body>
-    <h2>AST Generator</h2>
-    <p>Test expression with + or * and numbers of n digit then press enter</p>
-    <textarea type="text" id="x" style="width: 50%; height: 50%;"></textarea>
-    <div id="mynetwork" style="height: 80%;"></div>
-    <script type="text/javascript" src="index.js"></script>
+    <header class="App-header">
+        <nav>
+            <a href="#" id="logoIcon"></a>
+            <div>
+                <ul id="navbar">
+                    <li><a href="#">HOME</a></li>
+                    <li><a href="#">FILE</a>
+                        <ul class="sub-menu">
+                            <li><a href="#editors" onclick="openFileDialog()">Open</a></li>
+                            <li><a href="#editors" id="download">Download</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="#editors">EDITOR</a>
+                        <ul class="sub-menu">
+                            <li><a href="#editors" onclick="cleanEditors()">Clear</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">REPORTS</a>
+                        <ul class="sub-menu">
+                            <li><a href="#errors-table">Errors</a></li>
+                            <li><a href="#cst">CST</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <script src="https://unpkg.com/viz.js@1.8.0/viz.js" type="javascript/worker"></script>
+
+    <section id="homeSection">
+
+        <h1>OLC2 - G2</h1><br></br>
+        <p>This is a project that works as a programming language interpreter.<br>
+            In the first phase, recognition of the ARM v8 assembly language grammar is performed.</p>
+
+    </section>
+
+    <section id="editors">
+        <div class='containerE '>
+
+            <div class='LEditor'>
+                <h4>INPUT</h4>
+                <textarea class="textEditor" id="editor"></textarea>
+            </div>
+
+            <div class="REditor">
+                <h4>OUTPUT</h4>
+                <textarea class="textEditor" id="console_log"></textarea>
+            </div>
+
+        </div>
+
+        <div class="wrap">
+            <button variant="primary" class="button" id="run">RUN</button>
+        </div>
+
+    </section>
+
+
+    <section id="reports">
+        <h2>ERRORS TABLE</h2><br></br>
+        <div id='errors-table'></div>
+
+        <h2>CST</h2><br></br>
+        <div id='cst'></div>
+    </section>
+
+    <!-- ============================= PARSER ============================== -->
+    <script src="parser.js"></script>
+    <!-- ============================= SCRIPT ============================== -->
+    <script src="script.js"></script>
+
 </body>
+
 </html>
