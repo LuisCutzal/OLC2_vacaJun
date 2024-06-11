@@ -17,9 +17,9 @@ instructions
 
 instruction
     = comment
-    / operation
     / directive
     / label_ref
+    / operation
     / label_def
     / invalid
 
