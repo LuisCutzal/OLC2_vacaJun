@@ -44,7 +44,8 @@ operation
     / nemonic:nemonic _ source:source _ { return { nemonic: nemonic , value: source }; }
 
 directive
-    = "." directive_name:directive_name _ value:number? { return { type: "directive", name: directive_name, value: value || null }; }
+    = "." directive_name:directive_name _ value:(number / string / char / double) { return { type: "directive", name: directive_name, value: value || null }}
+
 
 label_ref
     = _ name:identifier ":" _ { return { type: "label_ref", name: name }; }
@@ -53,7 +54,7 @@ label_def
     = _ name:identifier _ {return {type: "label_def", name: name}}
 
 directive_name
-    = "ascii" / "asciz" / "byte" / "word" / "dword" / "align" / "space" / "global" / "section" / "text" / "data" / "bss" / "equ" / "end"
+    = "ascii" / "asciz" / "byte" / "word" / "dword" / "align" / "space" / "global" / "section" / "text" / "data" / "bss" / "equ" / "end" / "rodata"
 
 destiny
     = register:register { return register; }
