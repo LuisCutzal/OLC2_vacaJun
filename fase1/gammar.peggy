@@ -24,12 +24,16 @@ instruction
     / invalid
 
 invalid
-    =  !directive_name !nemonic  !number !string !double !newline !_ . {
-        errors.push(buildSyntaxError("Invalid token", location(), text(), "Léxico"));
+    = invalidToken:(!directive_name !nemonic !number !string !double !newline !_ .)+ {
+        errors.push(buildSyntaxError("Invalid token", location(), invalidToken.join(''), "Léxico"));
         return null; // Continuar con el análisis
-    	}
-    / !comment !block_comment !operation !directive !label_ref !label_def !destiny !source . {
-        errors.push(buildSyntaxError("Invalid Sintax", location(), text(), "Sintáctico"));
+    }
+    / invalidToken:(!comment !block_comment !operation !directive !label_ref !label_def !destiny !source .)+ {
+        errors.push(buildSyntaxError("Invalid Sintax", location(), invalidToken.join(''), "Sintáctico"));
+        return null; // Continuar con el análisis
+    }
+    / invalidToken:(!newline .)+ {
+        errors.push(buildSyntaxError("Unrecognized input", location(), invalidToken.join(''), "Sintáctico"));
         return null; // Continuar con el análisis
     }
 
