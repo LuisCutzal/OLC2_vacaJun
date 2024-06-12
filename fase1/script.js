@@ -101,7 +101,8 @@ const analysis = async () => {
         if (resultado.errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             resultado.errors.forEach(error => {
-                const errorType = error.invalidChar ? 'Léxico' : 'Sintáctico';
+                const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
+                console.log(error.message.includes("Unrecognized input"))
                 const errorMessage = error.message;
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
 
