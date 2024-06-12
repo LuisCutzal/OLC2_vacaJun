@@ -1,9 +1,59 @@
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
 
 $(document).ready(function () {
-    Arm64Editor = editor('editor', 'text/x-rustsrc');
+    addTab();
     consoleResult = editor('console_log', '', true, true, false);
 });
+
+
+function addTab() {
+    // Obtener el listado de las pestañas actuales
+    let btns = document.querySelectorAll(".LEditor .textEditor .buttonTab");
+    let id = btns.length;
+
+    // crear nuevo botón de pestaña
+    let btn = document.createElement('button');
+    btn.textContent = "T" + id;
+    btn.className = "buttonTab";
+
+    document.getElementById('buttonContainer').appendChild(btn);
+
+    btn.addEventListener('click', () => showSelectedTab(id));
+
+    // Crear nueva área de texto para la pestaña
+    let area = document.createElement('textarea');
+    area.className = "textTab";
+    area.id = id;
+    document.getElementById('tabs').appendChild(area);
+
+    // creando el nuevo code mirror
+    Arm64Editor = editor(id, 'text/x-rustsrc');
+
+    showSelectedTab(id);
+}
+
+
+function showSelectedTab(id) {
+
+
+    //Arm64Editor.setValue(document.getElementById(id).value);
+
+    //ocultar las todas las pestañas 
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+
+    for (let i = 0; i < codeMirrors.length - 1; i++) {
+        codeMirrors[i].style.display = 'none';
+        console.log(codeMirrors[i]);
+    }
+
+    //mostrar solo la pestaña actual
+    codeMirrors[id].style.display = 'block';
+
+}
+
+
+
+
 
 function editor(id, language, lineNumbers = true, readOnly = false, styleActiveLine = true) {
     return CodeMirror.fromTextArea(document.getElementById(id), {
@@ -180,3 +230,4 @@ const link2 = document.getElementById('download');
 link2.addEventListener('click', () => {
     saveFile("file", "s", Arm64Editor);
 });
+

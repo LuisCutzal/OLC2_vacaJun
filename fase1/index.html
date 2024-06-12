@@ -42,7 +42,7 @@
 </head>
 
 <body>
-    <header class="App-header">
+    <header class="app-header">
         <nav>
             <a href="#" id="logoIcon"></a>
             <div>
@@ -58,11 +58,12 @@
                     <li><a href="#editors">EDITOR</a>
                         <ul class="sub-menu">
                             <li><a href="#editors" onclick="cleanEditors()">Clear</a></li>
+                            <li><a href="#editors" onclick="addTab()">New</a></li>
                         </ul>
                     </li>
                     <li><a href="#">REPORTS</a>
                         <ul class="sub-menu">
-                            <li><a href="#errors-table">Errors</a></li>
+                            <li><a href="#errorsTable">Errors</a></li>
                             <li><a href="#cst">CST</a></li>
 
                         </ul>
@@ -86,19 +87,27 @@
 
             <div class='LEditor'>
                 <h4>INPUT</h4>
-                <textarea class="textEditor" id="editor"></textarea>
+                <div class="textEditor" id="tabs">
+                    <div id="buttonContainer"></div>
+                </div>
             </div>
 
             <div class="REditor">
                 <h4>OUTPUT</h4>
-                <textarea class="textEditor" id="console_log"></textarea>
+                <div class="textEditor">
+                    <button class="invisible-button">A</button>
+                    <textarea id="console_log"></textarea>
+                </div>
+
             </div>
+
 
         </div>
 
         <div class="wrap">
-            <button variant="primary" class="button" id="run">RUN</button>
+            <button variant="primary" class="button-run" id="run">RUN</button>
         </div>
+
 
     </section>
 

@@ -37,6 +37,13 @@ body {
 /*---------------------------------------------------------------------------------
                                           NAVBAR
   ---------------------------------------------------------------------------------*/
+.app-header {
+    position: relative;
+    z-index: 2;
+}
+
+
+
 nav {
     display: flex;
     align-items: center;
@@ -199,6 +206,8 @@ h4 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 1;
 }
 
 .containerE {
@@ -229,10 +238,11 @@ h4 {
 }
 
 .textEditor {
-    height: 95%;
+    height: 90%;
     width: 100%;
     color: white;
-    background-color: #000;
+    /* background-color: #000; */
+    border-radius: 0px 0px 25px 25px;
 }
 
 
@@ -240,8 +250,10 @@ h4 {
 .CodeMirror {
     height: 90%;
     width: 100%;
-    border-radius: 25px 25px 25px 25px;
-    padding: 0 0.75rem;
+
+    border-radius: 0px 0px 25px 25px;
+    /* padding: 0 0.75rem; */
+
 }
 
 
@@ -256,7 +268,7 @@ h4 {
     margin-top: 10px;
 }
 
-.button {
+.button-run {
     min-width: 40px;
     min-height: 30px;
     font-family: 'Nunito', sans-serif;
@@ -277,7 +289,7 @@ h4 {
     padding: 10px;
 }
 
-button::before {
+.button-run::before {
     content: '';
     border-radius: 1000px;
     min-width: calc(80px + 12px);
@@ -292,18 +304,18 @@ button::before {
     transition: all .3s ease-in-out 0s;
 }
 
-.button:hover,
-.button:focus {
+.button-run:hover,
+.button-run:focus {
     color: #313133;
     transform: translateY(-6px);
 }
 
-button:hover::before,
-button:focus::before {
+.button-run:hover::before,
+.button-run:focus::before {
     opacity: 1;
 }
 
-button::after {
+.button-run::after {
     content: '';
     width: 30px;
     height: 30px;
@@ -316,8 +328,12 @@ button::after {
 
 }
 
-button:hover::after,
-button:focus::after {
+.button-run:hover::after,
+.button-run:focus::after {
     animation: none;
     display: none;
+}
+
+.invisible-button {
+    opacity: 0;
 }
