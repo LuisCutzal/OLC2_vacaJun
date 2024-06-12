@@ -1,4 +1,4 @@
-let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
+let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
 
 $(document).ready(function () {
     addTab();
@@ -27,32 +27,43 @@ function addTab() {
     document.getElementById('tabs').appendChild(area);
 
     // creando el nuevo code mirror
-    Arm64Editor = editor(id, 'text/x-rustsrc');
+    Arm64Editors.push(editor(id, 'text/x-rustsrc'));
 
     showSelectedTab(id);
 }
 
 
 function showSelectedTab(id) {
+    //Actualizar el editor del que se extraerá el texto para el análisis
+    Arm64Editor = Arm64Editors[id];
 
+    //mostrar todas las pestañas
+    let btns = document.querySelectorAll(".LEditor .textEditor .buttonTab");
 
-    //Arm64Editor.setValue(document.getElementById(id).value);
+    btns.forEach(function (node) {
+        node.style.backgroundColor = "gray";
+        node.style.color = "white";
+        node.style.fontFamily = "Helvetica, Sans-serif";
+        node.style.borderRadius = "2px 2px 0 0";
+        node.style.border = "2px";
+        node.style.padding = "2px 4px";
 
-    //ocultar las todas las pestañas 
+    });
+
+    // resaltar la pestaña seleccionada
+    btns[id].style.backgroundColor = "#FF5722";
+
+    //ocultar las todas las áreas de texto
     let codeMirrors = document.querySelectorAll('.CodeMirror');
 
     for (let i = 0; i < codeMirrors.length - 1; i++) {
         codeMirrors[i].style.display = 'none';
-        console.log(codeMirrors[i]);
     }
 
-    //mostrar solo la pestaña actual
+    //mostrar solo el área de texto seleccionado
     codeMirrors[id].style.display = 'block';
 
 }
-
-
-
 
 
 function editor(id, language, lineNumbers = true, readOnly = false, styleActiveLine = true) {
@@ -62,7 +73,9 @@ function editor(id, language, lineNumbers = true, readOnly = false, styleActiveL
         styleActiveLine: styleActiveLine,
         matchBrackets: true,
         theme: "moxer",
-        mode: language
+        mode: language,
+        id: id
+
     });
 }
 
@@ -142,7 +155,9 @@ function isLexicalError(e) {
 let errorCounter = 0;
 
 const analysis = async () => {
+
     const text = Arm64Editor.getValue();
+    //const text = currentStr;
     cleanErrorsTable();
     errorCounter = 0;
     try {
@@ -175,6 +190,9 @@ const analysis = async () => {
             console.error('Error desconocido:', e);
         }
     }
+
+
+
 };
 
 function isLexicalError(error) {
@@ -224,7 +242,18 @@ function addErrorToTable(type, line, column, message) {
 
 
 const btnAnalysis = document.getElementById('run');
-btnAnalysis.addEventListener('click', () => analysis());
+btnAnalysis.addEventListener('click', () => {
+    analysis();
+
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+
+    // obtener el console log y añadirle animación cada que muestre un resultado
+    codeMirrors[codeMirrors.length - 1].style.animation = "none";
+    codeMirrors[codeMirrors.length - 1].offsetHeight;
+    codeMirrors[codeMirrors.length - 1].style.animation = "rainbow 0.5s";
+
+
+});
 
 const link2 = document.getElementById('download');
 link2.addEventListener('click', () => {

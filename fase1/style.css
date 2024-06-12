@@ -337,3 +337,33 @@ h4 {
 .invisible-button {
     opacity: 0;
 }
+
+
+@keyframes rainbow {
+
+    0% {
+        border: 2px solid transparent;
+        border-image: linear-gradient(to right, var(--highlight-color), yellow, var(--green-background)) 1;
+    }
+
+    25% {
+        border: 2px solid transparent;
+        border-image: linear-gradient(to right, var(--green-background), yellow, var(--green-background)) 1;
+    }
+
+
+    50% {
+        border: 2px solid transparent;
+        border-image: linear-gradient(to right, var(--green-background), yellow, var(--highlight-color)) 1;
+    }
+
+    75% {
+        border: 2px solid transparent;
+        border-image: linear-gradient(to right, var(--highlight-color), yellow, var(--green-background)) 1;
+    }
+
+    100% {
+        border: 2px solid transparent;
+        border-image: linear-gradient(to right, var(--highlight-color), yellow, var(--highlight-color)) 1;
+    }
+}
