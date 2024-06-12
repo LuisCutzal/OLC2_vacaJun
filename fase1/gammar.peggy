@@ -20,7 +20,7 @@ instruction
     / directive
     / label_ref
     / operation
-    / label_def
+    / identifier
     / invalid
 
 invalid
@@ -28,27 +28,26 @@ invalid
         errors.push(buildSyntaxError("Invalid token", location(), text(), "Léxico"));
         return null; // Continuar con el análisis
     	}
-    / !comment !block_comment !operation !directive !label_ref !label_def !destiny !source. {
+    / !comment !block_comment !operation !directive !label_ref !label_def !destiny !source . {
         errors.push(buildSyntaxError("Invalid Sintax", location(), text(), "Sintáctico"));
         return null; // Continuar con el análisis
     }
 
 comment
-    = "//" text:string { return { type: "comment", comment: text }; }
-    / ";" text:string { return { type: "comment", comment: text }; }
-    //block comment
-    / "/*" text:block_comment "*/" { return { type: "comment", comment: text }; }
+    = "//"  [^\n]* { return { type: "comment", comment: text() }; }
+    / ";"  [^\n]* { return { type: "comment", comment: text() }; }
+    /  text:block_comment  { return { type: "comment", comment: text }; }
 
 block_comment
-  = (!"*/" .)* { return text(); }
+  = "/*" (!"*/" .)* "*/" { return text(); }
 
 operation
-    = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return { nemonic: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }; }
-    / nemonic:nemonic _ destiny:destiny "," _ source:source { return { nemonic: nemonic , destiny: destiny, value: source }; }
-    / nemonic:nemonic _ source:source _ { return { nemonic: nemonic , value: source }; }
+    = nemonic:nemonic _ destiny:destiny "," _ source1:source "," _ source2:source { return {operation: { nemonic: nemonic , destiny: destiny, source1_val: source1, source2_val: source2 }}; }
+    / nemonic:nemonic _ destiny:destiny "," _ source:source { return {operation: { nemonic: nemonic , destiny: destiny, value: source }}; }
+    / nemonic:nemonic _ source:source _ { return {operation: { nemonic: nemonic , value: source }}; }
 
 directive
-    = "." directive_name:directive_name _ value:(number / string / char / double) { return { type: "directive", name: directive_name, value: value || null }}
+    = "." directive_name:directive_name _ value:(number / string / char / double )? _ { return { type: "directive", name: directive_name, value: value || null }}
 
 
 label_ref
@@ -89,7 +88,7 @@ nemonic
         ];
 
         if (validNemonics.includes(textValue)) {
-            return textValue.toLowerCase();
+            return {nemonic:textValue.toLowerCase()};
         }
     }
 
@@ -127,7 +126,7 @@ register "register"
     / identifier:identifier { return identifier; }
 
 identifier "identifier"
-    =[a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+    = [a-zA-Z_][a-zA-Z0-9_]* { return {identifier: text()}; }
 
 number "number"
     = "0x" hex:[a-fA-F0-9]+ { return parseInt(hex.join(""), 16) }
@@ -139,7 +138,7 @@ char 'char'
     = "'"[^']"'" { return text().trim(); }
 
 string "string"
-    = [^\n]* { return text().trim(); }
+    = '"' chars:[^"]*'"' { return {string :chars.join('')} }
     
 double "double"
     = _ [0-9]+ "." [0-9]+ { return parseFloat(text()); }
