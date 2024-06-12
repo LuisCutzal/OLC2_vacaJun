@@ -83,23 +83,36 @@ function isLexicalError(e) {
             !validInteger.test(e.found) &&
             !validRegister.test(e.found) &&
             !validCharacter.test(e.found)) {
-            return true; // Error léxico
+            return true;
         }
     }
-    return false; // Error sintáctico
+    return false;
 }
+
+let errorCounter = 0;
 
 const analysis = async () => {
     const text = Arm64Editor.getValue();
-    cleanErrorsTable(); // Limpiar la tabla de errores antes de empezar
+    cleanErrorsTable();
+    errorCounter = 0;
     try {
         let resultado = PEG.parse(text);
         console.log(resultado);
-        consoleResult.setValue("VALIDO");
+        if (resultado.errors.length > 0) {
+            consoleResult.setValue("Error, ver tabla de errores");
+            resultado.errors.forEach(error => {
+                const errorType = error.invalidChar ? 'Léxico' : 'Sintáctico';
+                const errorMessage = error.message;
+                const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
+
+                addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
+            });
+        } else {
+            consoleResult.setValue("VALIDO");
+        }
     } catch (e) {
-        console.log(PEG);
         if (e instanceof PEG.SyntaxError) {
-            const errorType = isLexicalError(e) ? 'Léxico' : 'Sintáctico';
+            const errorType = 'Sintáctico';
             const errorMessage = e.message;
             const errorLocation = `Fila: ${e.location.start.line}, Columna: ${e.location.start.column}`;
 
@@ -113,47 +126,51 @@ const analysis = async () => {
     }
 };
 
-const addErrorToTable = (type, line, column, message) => {
-    const errorTableContainer = document.getElementById('errors-table-container');
-    if (!errorTableContainer.innerHTML) {
-        createErrorsTable();
+function isLexicalError(error) {
+    return error.location.start.line === 1;
+}
+
+function cleanErrorsTable() {
+    const table = document.getElementById('errorsTable');
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
     }
-    const tableBody = document.getElementById('errors-table-body');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td style="background-color: white;">${tableBody.rows.length + 1}</td>
-        <td style="background-color: white;">${type}</td>
-        <td style="background-color: white;">${line}</td>
-        <td style="background-color: white;">${column}</td>
-        <td style="background-color: white;">${message}</td>
-    `;
-    tableBody.appendChild(row);
-};
+}
 
-const createErrorsTable = () => {
-    const errorTableContainer = document.getElementById('errors-table-container');
-    const table = document.createElement('table');
-    table.id = 'errors-table';
-    table.className = 'highlight centered';
-    table.innerHTML = `
-        <thead>
-            <tr style="background-color: green; color: white;">
-                <th>No.</th>
-                <th>Tipo de error</th>
-                <th>Fila</th>
-                <th>Columna</th>
-                <th>Mensaje</th>
-            </tr>
-        </thead>
-        <tbody id="errors-table-body"></tbody>
-    `;
-    errorTableContainer.appendChild(table);
-};
+function addErrorToTable(type, line, column, message) {
+    const table = document.getElementById('errorsTable');
+    const row = table.insertRow();
+    row.style.backgroundColor = 'white';
+    row.style.color = 'black';
 
-const cleanErrorsTable = () => {
-    const errorTableContainer = document.getElementById('errors-table-container');
-    errorTableContainer.innerHTML = '';
-};
+    const cellNumber = row.insertCell(0);
+    const cellType = row.insertCell(1);
+    const cellLine = row.insertCell(2);
+    const cellColumn = row.insertCell(3);
+    const cellMessage = row.insertCell(4);
+
+    cellNumber.textContent = ++errorCounter;
+    cellNumber.style.border = '1px solid black';
+    cellNumber.style.padding = '8px';
+
+    cellType.textContent = type;
+    cellType.style.border = '1px solid black';
+    cellType.style.padding = '8px';
+
+    cellLine.textContent = line;
+    cellLine.style.border = '1px solid black';
+    cellLine.style.padding = '8px';
+
+    cellColumn.textContent = column;
+    cellColumn.style.border = '1px solid black';
+    cellColumn.style.padding = '8px';
+
+    cellMessage.textContent = message;
+    cellMessage.style.border = '1px solid black';
+    cellMessage.style.padding = '8px';
+}
+
+
 
 const btnAnalysis = document.getElementById('run');
 btnAnalysis.addEventListener('click', () => analysis());
