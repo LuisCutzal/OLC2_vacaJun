@@ -10,7 +10,7 @@ function addTab() {
     // Obtener el listado de las pestañas actuales
     let btns = document.querySelectorAll(".LEditor .textEditor .buttonTab");
     let id = btns.length;
-
+    //@
     // crear nuevo botón de pestaña
     let btn = document.createElement('button');
     btn.textContent = "T" + id;
