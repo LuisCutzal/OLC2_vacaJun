@@ -161,9 +161,9 @@ const analysis = async () => {
     errorCounter = 0;
     try {
         let resultado = PEG.parse(text);
-        generateCST(resultado);
-        console.log(resultado);
-        if (resultado.errors.length > 0) {
+        generateCST(resultado.getDot(resultado));
+        console.log(resultado.getDot(resultado));
+        /*if (resultado.errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             resultado.errors.forEach(error => {
                 const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
@@ -175,13 +175,13 @@ const analysis = async () => {
             });
         } else {
             consoleResult.setValue("VALIDO");
-        }
+        }*/
     } catch (e) {
         if (e instanceof PEG.SyntaxError) {
             const errorType = 'Sintáctico';
             const errorMessage = e.message;
             const errorLocation = `Fila: ${e.location.start.line}, Columna: ${e.location.start.column}`;
-
+            
             consoleResult.setValue(`Error, ver tabla de errores`);
             console.log(errorMessage);
 
@@ -273,7 +273,7 @@ function generateCST(DOTstring){
     }
     var options = {
         nodes: {
-            widthConstraint: 20,
+            widthConstraint: 100,
         },        
         layout: {
             hierarchical: {
