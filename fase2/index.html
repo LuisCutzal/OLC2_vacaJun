@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/moxer.min.css"
         integrity="sha512-zrCGHGmTpiZpzVJ6BdiDfsUT6t8+oOKmOtfU82GhBo/7sk/cns7phhKXSWmGH6uACPqgjP8QmgczNBY7HMB9TQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <title>OLC2-FASE2</title>
     <link rel="stylesheet" href="./style.css">
 
@@ -96,8 +96,37 @@
             <div class="REditor">
                 <h4>OUTPUT</h4>
                 <div class="textEditor">
-                    <button class="invisible-button">A</button>
+                    <div id="buttonContainer">
+                        <button class="buttonTab" id="console_tab">CONSOLE</button>
+                        <button class="buttonTab" id="quad_tab">QUADRUPLES</button>
+                    </div>
+
                     <textarea id="console_log"></textarea>
+                    <div id="quadruples">
+                        <table id="quadsTable" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>Op</th>
+                                    <th>Arg1</th>
+                                    <th>Arg2</th>
+                                    <th>Arg3</th>
+                                    <th>Arg4</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Op</th>
+                                    <th>Arg1</th>
+                                    <th>Arg2</th>
+                                    <th>Arg3</th>
+                                    <th>Arg4</th>
+                                    <th>Result</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
 
             </div>
@@ -137,6 +166,7 @@
     <script src="parser.js"></script>
     <!-- ============================= SCRIPT ============================== -->
     <script src="script.js"></script>
+    <script src="quad.js"></script>
 
 </body>
 

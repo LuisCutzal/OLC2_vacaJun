@@ -1,8 +1,11 @@
-let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
+
+
+let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [], quads = [];
 
 $(document).ready(function () {
     addTab();
     consoleResult = editor('console_log', '', true, true, false);
+    btnConsole.click();
 });
 
 
@@ -65,6 +68,32 @@ function showSelectedTab(id) {
 
 }
 
+function showOutputTab(id) {
+    //mostrar todas las pestañas
+    let btns = document.querySelectorAll(".REditor .textEditor .buttonTab");
+
+    btns.forEach(function (node) {
+        node.style.backgroundColor = "gray";
+        node.style.color = "white";
+        node.style.fontFamily = "Helvetica, Sans-serif";
+        node.style.borderRadius = "2px 2px 0 0";
+        node.style.border = "2px";
+        node.style.padding = "2px 4px";
+
+    });
+
+    // resaltar la pestaña seleccionada
+    btns[id].style.backgroundColor = "#FF5722";
+
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+    if (id == 0) {
+        codeMirrors[codeMirrors.length - 1].style.display = 'block'; // mostrar la consola de salida
+        document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
+    } else {
+        codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
+        document.getElementById('quadruples').style.display = 'block'; // mostrar la tabla de cuadruplos
+    }
+}
 
 function editor(id, language, lineNumbers = true, readOnly = false, styleActiveLine = true) {
     return CodeMirror.fromTextArea(document.getElementById(id), {
@@ -155,14 +184,21 @@ function isLexicalError(e) {
 let errorCounter = 0;
 
 const analysis = async () => {
+
     const text = Arm64Editor.getValue();
     //const text = currentStr;
     cleanErrorsTable();
+    cleanQuadsTable();
     errorCounter = 0;
     try {
         let resultado = PEG.parse(text);
         generateCST(resultado.getDot(resultado));
-        console.log(resultado.getDot(resultado));
+        generateQuads(resultado);
+        addQuadsToTable();
+        // console.log(quads);
+
+        //console.log(resultado.getDot(resultado));
+
         /*if (resultado.errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             resultado.errors.forEach(error => {
@@ -181,7 +217,7 @@ const analysis = async () => {
             const errorType = 'Sintáctico';
             const errorMessage = e.message;
             const errorLocation = `Fila: ${e.location.start.line}, Columna: ${e.location.start.column}`;
-            
+
             consoleResult.setValue(`Error, ver tabla de errores`);
             console.log(errorMessage);
 
@@ -263,7 +299,7 @@ link2.addEventListener('click', () => {
 //-----------------------------------fase 2------------------------------------------------
 //-----------------------------------------------------------------------------------------
 
-function generateCST(DOTstring){
+function generateCST(DOTstring) {
     var container = document.getElementById("cst");
     //var DOTstring = PEG.parse(x);
     var parsedData = vis.parseDOTNetwork(DOTstring);
@@ -271,10 +307,11 @@ function generateCST(DOTstring){
         nodes: parsedData.nodes,
         edges: parsedData.edges
     }
+    console.log(data);
     var options = {
         nodes: {
             widthConstraint: 100,
-        },        
+        },
         layout: {
             hierarchical: {
                 levelSeparation: 60,
@@ -284,7 +321,84 @@ function generateCST(DOTstring){
                 sortMethod: 'directed',  // hubsize, directed
                 shakeTowards: 'roots'  // roots, leaves                        
             },
-        },                        
+        },
     };
     var network = new vis.Network(container, data, options);
 };
+
+
+function generateQuads(result) {
+
+    if (result.children.length > 0) {
+        result.children.forEach(function (element) {
+            // console.log(element);
+            switch (element.type) {
+                case "INSTRUCTION": // crear un nuevo cuadruplo por cada instrucción
+                    let quad = new Quadruple();
+                    quad.setOperator(element.value);
+                    quads.push(quad);
+                    break;
+
+                case "DESTINATION": // Asignar el valor del resultado del cuadruplo
+                    quads[quads.length - 1].setResult(element.children[0].value);
+                    break;
+                case "SOURCE1": // Asignar el valor del ARG1 del cuadruplo
+                    quads[quads.length - 1].setArg1(element.children[0].value);
+                    break;
+                case "SOURCE2": // Asignar el valor del ARG2 del cuadruplo
+                    quads[quads.length - 1].setArg2(element.children[0].value);
+                    break;
+                case "SOURCE3": // Asignar el valor del ARG3 del cuadruplo
+                    quads[quads.length - 1].setArg3(element.children[0].value);
+                    break;
+                case "SOURCE4": // Asignar el valor del ARG4 del cuadruplo
+                    quads[quads.length - 1].setArg4(element.children[0].value);
+                    break;
+
+            }
+
+            generateQuads(element); // llamada recursiva para ir a evaluar todos los hijos del nodo actual
+
+        });
+    }
+
+}
+
+function cleanQuadsTable() {
+    const table = document.getElementById('quadsTable');
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+        quads.pop();
+    }
+}
+
+function addQuadsToTable() {
+    const table = document.getElementById('quadsTable');
+
+    quads.forEach(function (q) {
+        const row = table.insertRow();
+
+        const cellOp = row.insertCell(0);
+        const cellArg1 = row.insertCell(1);
+        const cellArg2 = row.insertCell(2);
+        const cellArg3 = row.insertCell(3);
+        const cellArg4 = row.insertCell(4);
+        const cellRes = row.insertCell(5);
+
+        cellOp.textContent = q.getOperator();
+        cellArg1.textContent = q.getArg1();
+        cellArg2.textContent = q.getArg2();
+        cellArg3.textContent = q.getArg3();
+        cellArg4.textContent = q.getArg4();
+        cellRes.textContent = q.getResult();
+    });
+
+
+
+}
+
+const btnConsole = document.getElementById('console_tab');
+btnConsole.addEventListener('click', () => { showOutputTab(0) });
+
+const btnQuad = document.getElementById('quad_tab');
+btnQuad.addEventListener('click', () => { showOutputTab(1) });
