@@ -278,6 +278,20 @@ add_inst "Instrucción de Suma"
             return node;
         }
 
+     //NEG{S} rd, op2 rd = −op2 S is optional and updates flags
+    / _* ins:("NEG"i / "NEGS") _* rd:reg64 _* "," _* src1:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            return node;
+        }
+        
+
 // Instrucciones de Resta 64 bits y 32 bits (SUB)  
 sub_inst
     = _* "SUB"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
@@ -305,9 +319,9 @@ sub_inst
             return node;
         }
     //SUB with {S} suffix resta con actualización de banderas
-    / _* ("SUB"i / "SUBS"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+    / _* ins:("SUB"i / "SUBS"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
         {
-            const node = createNode('INSTRUCTION', 'SUB');
+            const node = createNode('INSTRUCTION', ins);
             const rdNode = createNode('DESTINATION', 'RD');
             const src1Node = createNode('SOURCE1', 'SRC1');
             addChild(rdNode, rd);
@@ -317,9 +331,6 @@ sub_inst
             addChild(node, src2);
             return node;
         }
-
-
-    //rule ADR
 
 
 
