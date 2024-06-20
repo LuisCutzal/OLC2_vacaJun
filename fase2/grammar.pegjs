@@ -1141,7 +1141,19 @@ extend_op "Operador de Extensión"
 
 // Definición de valores inmediatos
 immediate "Inmediato"
-    = integer
+    = "0b" binary_literal
+        {
+            const node = createNode('INMEDIATE_OP', 'Binary');
+            setValue(node, text());
+            return node;
+        }
+    / "'"letter"'"
+        {
+            const node = createNode('INMEDIATE_OP', 'Letter');
+            setValue(node, text());
+            return node;
+        }
+    / integer
         {
             const node = createNode('INMEDIATE_OP', 'Integer');
             setValue(node, text());
@@ -1159,12 +1171,14 @@ immediate "Inmediato"
             setValue(node, text());
             return node;
         }
+    
     / "#" "0b" binary_literal
         {
             const node = createNode('INMEDIATE_OP', '#');
             setValue(node, text());
             return node;
         }
+    
     / "#" integer
         {
             const node = createNode('INMEDIATE_OP', '#');
