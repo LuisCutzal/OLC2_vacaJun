@@ -196,6 +196,102 @@ add_inst "Instrucción de Suma"
             addChild(node, src2);
             return node;
         }
+    //ADD with {S} suffix suma con actualización de banderas
+    / _* ins:("ADD" / "ADDS") _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2);
+            return node;
+        }
+    //ADC with carry and optional {S} suffix with update flags
+    / _* ins:("ADC"i / "ADCS"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2);
+            return node;
+        }
+    //ADR instruction to load the address of a label into a register or ADRP instruction to load the address of a label into a register, with the page address
+    / _* ins:("ADR"i / "ADRP"i) _* rd:reg64 _* "," _* label:label _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            addChild(rdNode, rd);
+            addChild(node, rdNode);
+            addChild(node, label);
+            return node;
+        }
+    //CMN rd, op2 or CMP rd, op2
+    / _* ins:("CMN"i / "CMP"i) _* rd:reg64 _* "," _* src1:reg64 _*  comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            return node;
+        }
+    //MADD rd, rn, rm, ra or rd = ra + rn × rm MSUB rd, rn, rm, ra or rd = ra − rn × rm
+    / _* ins:("MADD"i / "MSUB"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* "," _* src3:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            const src3Node = createNode('SOURCE3', 'SRC3');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(src3Node, src3);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            addChild(node, src3Node);
+            return node;
+        }
+    //MNEG rd, rn, rm rd = − rn × rm
+    / _* "MNEG"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'MNEG');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+
+     //NEG{S} rd, op2 rd = −op2 S is optional and updates flags
+    / _* ins:("NEG"i / "NEGS") _* rd:reg64 _* "," _* src1:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            return node;
+        }
+        
+
 // Instrucciones de Resta 64 bits y 32 bits (SUB)  
 sub_inst
     = _* "SUB"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
@@ -222,6 +318,22 @@ sub_inst
             addChild(node, src2);
             return node;
         }
+    //SUB with {S} suffix resta con actualización de banderas
+    / _* ins:("SUB"i / "SUBS"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2);
+            return node;
+        }
+
+
+
 // Instrucciones de Multiplicación 64 bits y 32 bits (MUL)
 mul_inst
     = _* "MUL"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
