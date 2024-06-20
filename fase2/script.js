@@ -184,7 +184,7 @@ function isLexicalError(e) {
 let errorCounter = 0;
 
 const analysis = async () => {
-
+    startTime = performance.now(); // Guardar tiempo de inicio
     const text = Arm64Editor.getValue();
     //const text = currentStr;
     cleanErrorsTable();
@@ -195,6 +195,12 @@ const analysis = async () => {
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
         addQuadsToTable();
+        endTime = performance.now();
+        const elapsedTime = (endTime - startTime).toFixed(3);
+        console.log(`Tardó ${elapsedTime} milisegundos en completar el análisis.`);
+        // Mostrar el tiempo transcurrido en un elemento del DOM
+        const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
+        tiempoTranscurridoElement.textContent = `Tardó ${elapsedTime} milisegundos en completar el análisis.`;
         // console.log(quads);
 
         //console.log(resultado.getDot(resultado));
