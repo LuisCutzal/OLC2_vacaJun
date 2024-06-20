@@ -126,7 +126,8 @@ directive_p
 // Nombre de las directivas
 directive_name
   = "align" / "ascii" / "asciz" / "byte" / "hword" / "word" / "quad" /
-    "data" / "text" / "global" / "section" / "space" / "zero" / "incbin" / "set" / "equ" / "bss"
+    "data" / "text" / "global" / "section" / "space" / "zero" / "incbin" / "set" / "equ" / "bss" /
+    "skip"
 
 // Secciones
 section
@@ -1153,7 +1154,7 @@ immediate "Inmediato"
             setValue(node, text());
             return node;
         }
-    / integer
+    / signed_integer
         {
             const node = createNode('INMEDIATE_OP', 'Integer');
             setValue(node, text());
@@ -1179,13 +1180,21 @@ immediate "Inmediato"
             return node;
         }
     
-    / "#" integer
+    / "#" signed_integer
         {
             const node = createNode('INMEDIATE_OP', '#');
             setValue(node, text());
             return node;
         }
 
+// Enteros con signo
+signed_integer
+    = "-"? integer
+        {
+            const node = createNode('INTEGER', 'Integer');
+            setValue(node, text());
+            return node;
+        }
 binary_literal
   = [01]+ // Representa uno o más dígitos binarios
 hex_literal
