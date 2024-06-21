@@ -352,6 +352,56 @@ add_inst "Instrucción de Suma"
             return node;
         }
 
+    //SMSUBL Xd, Wn, Wm, Xa Xd = Xa − Wn ¯× Wm SMSUBL instruction
+    / _* "SMSUBL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* src3:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'SMSUBL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            const src3Node = createNode('SOURCE3', 'SRC3');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(src3Node, src3);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            addChild(node, src3Node);
+            return node;
+        }
+
+    //SMULH Xd, Xn, Xm Xd = Xn ¯× Xm SMULH instruction
+    / _* "SMULH"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'SMULH');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+    //SMULL d, Wn, Wm Xd = Wn ¯× Wm SMULL instruction
+    / _* "SMULL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'SMULL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+    
 // Instrucciones de Resta 64 bits y 32 bits (SUB)  
 sub_inst
     = _* "SUB"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
@@ -472,6 +522,92 @@ udiv_inst
             addChild(node, src2);
             return node;
         }
+
+    // UMADDL Xd, Wn, Wm, Xa Xd = Xa + Wn × Wm UMADDL instruction
+    / _* "UMADDL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* src3:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'UMADDL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            const src3Node = createNode('SOURCE3', 'SRC3');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(src3Node, src3);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            addChild(node, src3Node);
+            return node;
+        }
+
+    //UMNEGL Xd, Wn, Wm Xd = − Wn × Wm UMNEGL instruction
+    / _* "UMNEGL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'UMNEGL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+    //UMSUBL Xd, Wn, Wm, Xa Xd = Xa − Wn × Wm UMSUBL instruction    
+    / _* "UMSUBL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* src3:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'UMSUBL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            const src3Node = createNode('SOURCE3', 'SRC3');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(src3Node, src3);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            addChild(node, src3Node);
+            return node;
+        }
+    //UMULH Xd, Xn, Xm Xd = (Xn × Xm)127:64 UMULH instruction
+    / _* "UMULH"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'UMULH');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+
+    //UMULL Xd, Wn, Wm Xd = Wn × Wm UMULL instruction
+    / _* "UMULL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'UMULL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }    
+
+
 // Instrucciones de División con signo 64 bits y 32 bits (SDIV)
 sdiv_inst
     = _* "SDIV"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
