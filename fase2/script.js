@@ -112,6 +112,7 @@ function cleanEditors() {
     Arm64Editor.setValue("");
     consoleResult.setValue("");
     cleanErrorsTable(); // Limpiar la tabla de errores
+    cleanQuadsTable(); // Limpiar la tabla de cuadruplos
 }
 
 function openFileDialog() {
@@ -195,15 +196,8 @@ const analysis = async () => {
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
         addQuadsToTable();
-        endTime = performance.now();
-        const elapsedTime = (endTime - startTime).toFixed(3);
-        console.log(`Tardó ${elapsedTime} milisegundos en completar el análisis.`);
-        // Mostrar el tiempo transcurrido en un elemento del DOM
-        const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
-        tiempoTranscurridoElement.textContent = `Tardó ${elapsedTime} milisegundos en completar el análisis.`;
-        // console.log(quads);
 
-        //console.log(resultado.getDot(resultado));
+
 
         /*if (resultado.errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
@@ -233,7 +227,12 @@ const analysis = async () => {
         }
     }
 
-
+    endTime = performance.now();
+    const elapsedTime = (endTime - startTime).toFixed(3);
+    //console.log(`Tardó ${elapsedTime} milisegundos en completar el análisis.`);
+    // Mostrar el tiempo transcurrido en un elemento del DOM
+    const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
+    tiempoTranscurridoElement.textContent = `Tardó ${elapsedTime} milisegundos en completar el análisis.`;
 
 };
 
@@ -337,12 +336,25 @@ function generateQuads(result) {
 
     if (result.children.length > 0) {
         result.children.forEach(function (element) {
-            // console.log(element);
+            console.log(element);
             switch (element.type) {
                 case "INSTRUCTION": // crear un nuevo cuadruplo por cada instrucción
+                case "SECTION": // crear un nuevo cuadruplo por cada sección
                     let quad = new Quadruple();
                     quad.setOperator(element.value);
                     quads.push(quad);
+
+                    switch (element.value) {
+                        case 'SVC':
+                            quads[quads.length - 1].setArg1(element.children[0].value);
+                            break;
+                        case 'Section':
+                            console.log("Viene sección");
+                            quads[quads.length - 1].setResult(element.children[0].value);
+                            break;
+                    }
+
+
                     break;
 
                 case "DESTINATION": // Asignar el valor del resultado del cuadruplo
@@ -360,6 +372,8 @@ function generateQuads(result) {
                 case "SOURCE4": // Asignar el valor del ARG4 del cuadruplo
                     quads[quads.length - 1].setArg4(element.children[0].value);
                     break;
+
+
 
             }
 
