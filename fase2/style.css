@@ -112,6 +112,7 @@ nav {
 /*mostrar un submenú cuando se pase encima del elemento*/
 #navbar li:hover>ul {
     display: block;
+    background-color: var(--nav-background);
 }
 
 #navbar li ul li {
@@ -265,6 +266,48 @@ h4 {
 }
 
 
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+thead {
+    background-color: var(--nav-background);
+    color: white;
+}
+
+
+tbody {
+    background-color: var(--primary-color);
+}
+
+
+tbody tr:nth-child(even) {
+    /* background-color: var(--background-color-middy); */
+    border-color: var(--background-color-middy);
+}
+
+tbody tr:nth-child(odd) {
+    /* background-color: var(--background-color-semi); */
+    border-color: var(--background-color-semi);
+}
+
+
+td,
+th {
+    /* border: 1px dotted var(--highlight-color); */
+    padding: 8px;
+}
+
+td:hover {
+    background-color: var(--highlight-color);
+}
+
+
+
+
 /*----------------------------------------------------------------------------------
                                     BUTTON
   ----------------------------------------------------------------------------------*/
@@ -374,4 +417,28 @@ h4 {
         border: 2px solid transparent;
         border-image: linear-gradient(to right, var(--highlight-color), yellow, var(--highlight-color)) 1;
     }
+}
+
+
+@keyframes colors {
+    0% {
+        color: var(--text-color);
+    }
+
+    50% {
+        color: var(--green-background);
+    }
+
+    75% {
+        color: var(--highlight-color);
+    }
+
+    100% {
+        color: var(--text-color);
+    }
+}
+
+#tiempoTranscurrido {
+    animation: colors 1s infinite;
+    text-align: center;
 }

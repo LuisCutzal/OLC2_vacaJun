@@ -79,15 +79,21 @@
 
         <h1>OLC2 - G2</h1><br></br>
         <p>This is a project that works as a programming language interpreter.<br>
-            In the first phase, recognition of the ARM v8 assembly language grammar is performed.</p>
+            In the first phase, recognition of the ARM v8 assembly language grammar is performed.<br>
+            In the second phase, the ARMv8 recognition grammar is completed, in addition to the generation of the CST
+            tree and the Quadruples table.
+        </p>
 
     </section>
 
     <section id="editors">
+
+
         <div class='containerE '>
 
             <div class='LEditor'>
                 <h4>INPUT</h4>
+
                 <div class="textEditor" id="tabs">
                     <div id="buttonContainer"></div>
                 </div>
@@ -114,11 +120,12 @@
                                     <th>Result</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="quadsBody"></tbody>
                         </table>
                     </div>
                 </div>
-
+                <p id="tiempoTranscurrido">
+                </p>
             </div>
 
 
@@ -130,9 +137,7 @@
 
 
     </section>
-    <p id="tiempoTranscurrido"
-        style="color: white; font-size: 18px; font-family: Arial, sans-serif; text-align: center; margin-top: 10px;">
-    </p>
+
 
     <section id="reports">
         <h2>ERRORS TABLE</h2><br></br>

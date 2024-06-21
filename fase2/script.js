@@ -229,10 +229,16 @@ const analysis = async () => {
 
     endTime = performance.now();
     const elapsedTime = (endTime - startTime).toFixed(3);
-    //console.log(`Tardó ${elapsedTime} milisegundos en completar el análisis.`);
     // Mostrar el tiempo transcurrido en un elemento del DOM
     const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
     tiempoTranscurridoElement.textContent = `Tardó ${elapsedTime} milisegundos en completar el análisis.`;
+
+
+
+    tiempoTranscurridoElement.style.display = 'block'; // mostrar el mensaje
+    setTimeout(function () {
+        tiempoTranscurridoElement.style.display = 'none'; // ocultar el mensaje después de 3 segundos
+    }, 3000);
 
 };
 
@@ -390,10 +396,11 @@ function cleanQuadsTable() {
         table.deleteRow(1);
         quads.pop();
     }
+
 }
 
 function addQuadsToTable() {
-    const table = document.getElementById('quadsTable');
+    const table = document.getElementById('quadsBody');
 
     quads.forEach(function (q) {
         const row = table.insertRow();
