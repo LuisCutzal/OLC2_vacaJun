@@ -1005,9 +1005,21 @@ reg64 "Registro_64_Bits"
             setValue(node, text());
             return node;
         }
+    / "XZR"i  // Zero Register Extend (XZR)
+        {
+            const node = createNode('R_ZERO_REGISTER', 'XZR');
+            setValue(node, text());
+            return node;
+        }
     / "ZR"i  // Zero Register
         {
             const node = createNode('R_ZERO_REGISTER', 'ZR');
+            setValue(node, text());
+            return node;
+        }
+    / "PC"i // program counter
+        {
+            const node = createNode('PROGRAM_COUNTER', 'PC');
             setValue(node, text());
             return node;
         }
@@ -1016,6 +1028,12 @@ reg32 "Registro_32_Bits"
     = "w"i ("30" / [12][0-9] / [0-9])
         {
             const node = createNode('RG_32_BITS', 'reg32');
+            setValue(node, text());
+            return node;
+        }
+    / "WZR"i  // Zero Register Extend (WZR)
+        {
+            const node = createNode('R_ZERO_REGISTER', 'WZR');
             setValue(node, text());
             return node;
         }
