@@ -291,7 +291,66 @@ add_inst "Instrucción de Suma"
             addChild(node, src1Node);
             return node;
         }
-        
+    //NGC{S} rd, op2 rd = −op2 − C S is optional and updates flags instruction with carry
+    / _* ins:("NGC"i / "NGCS"i) _* rd:reg64 _* "," _* src1:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            return node;
+        }
+    //SBC{S} rd, rn, rm rd = rn − rm − C S is optional and updates flags instruction with carry
+    / _* ins:("SBC"i / "SBCS"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', ins);
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
+    //SMADDL Xd, Wn, Wm, Xa Xd = Xa + Wn ¯× Wm SMADDL instruction
+    / _* "SMADDL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* src3:reg64 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'SMADDL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            const src3Node = createNode('SOURCE3', 'SRC3');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(src3Node, src3);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            addChild(node, src3Node);
+            return node;
+        }
+    //SMNEGL Xd, Wn, Wm Xd = − Wn ¯× Wm SMNEGL instruction
+    / _* "SMNEGL"i _* rd:reg64 _* "," _* src1:reg32 _* "," _* src2:reg32 _* comment? "\n"?
+        {
+            const node = createNode('INSTRUCTION', 'SMNEGL');
+            const rdNode = createNode('DESTINATION', 'RD');
+            const src1Node = createNode('SOURCE1', 'SRC1');
+            const src2Node = createNode('SOURCE2', 'SRC2');
+            addChild(rdNode, rd);
+            addChild(src1Node, src1);
+            addChild(src2Node, src2);
+            addChild(node, rdNode);
+            addChild(node, src1Node);
+            addChild(node, src2Node);
+            return node;
+        }
 
 // Instrucciones de Resta 64 bits y 32 bits (SUB)  
 sub_inst
