@@ -336,7 +336,7 @@ function generateQuads(result) {
 
     if (result.children.length > 0) {
         result.children.forEach(function (element) {
-            console.log(element);
+            //console.log(element);
             switch (element.type) {
                 case "INSTRUCTION": // crear un nuevo cuadruplo por cada instrucción
                 case "SECTION": // crear un nuevo cuadruplo por cada sección
@@ -349,11 +349,9 @@ function generateQuads(result) {
                             quads[quads.length - 1].setArg1(element.children[0].value);
                             break;
                         case 'Section':
-                            console.log("Viene sección");
                             quads[quads.length - 1].setResult(element.children[0].value);
                             break;
                     }
-
 
                     break;
 
@@ -372,8 +370,10 @@ function generateQuads(result) {
                 case "SOURCE4": // Asignar el valor del ARG4 del cuadruplo
                     quads[quads.length - 1].setArg4(element.children[0].value);
                     break;
-
-
+                case "LABEL":
+                    // Verificar si el label corresponde a una etiqueta de salto y asignarla al resultado
+                    if (element.value === 'LBL') quads[quads.length - 1].setResult(element.children[0].value);
+                    break;
 
             }
 
@@ -412,9 +412,6 @@ function addQuadsToTable() {
         cellArg4.textContent = q.getArg4();
         cellRes.textContent = q.getResult();
     });
-
-
-
 }
 
 const btnConsole = document.getElementById('console_tab');

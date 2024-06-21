@@ -171,6 +171,9 @@ instruction
     / i:b_inst
     / i:ret_inst
     / i:svc_inst
+    / i:bit_manipulation
+    / i:condi_instruc
+    / i:branch_instruc
 // Instrucciones Suma 64 bits y 32 bits (ADD)
 add_inst "Instrucción de Suma"
     = _* "ADD"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
@@ -636,9 +639,9 @@ sdiv_inst
         }
 // Instrucciones AND 64 bits y 32 bits (AND)        
 and_inst
-    = _* "AND"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+    = _* ins:("AND"i/ "ANDS") _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
         {
-            const node = createNode('INSTRUCTION', 'AND');
+            const node = createNode('INSTRUCTION', ins);
             const rdNode = createNode('DESTINATION', 'RD');
             const src1Node = createNode('SOURCE1', 'SRC1');
             addChild(rdNode, rd);
@@ -725,6 +728,277 @@ mov_inst "Instrucción MOV"
     addChild(node, srcNode);
     return node;
   }
+
+bit_manipulation "Ins bits"
+    //BFI rd, rn, #p, #n rdp+n−1:p = rnn−1:0
+    = _* "BFI"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:immediate _* "," _* src3:immediate _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'BFI');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2);
+        addChild(node, src3);
+        return node;
+    }
+    //BFXIL rd, rn, #p, #n rdn−1:0 = rnp+n−1:p
+    / _* "BFXIL"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:immediate _* "," _* src3:immediate _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'BFXIL');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2);
+        addChild(node, src3);
+        return node;
+    }
+    //CLS rd, rn rd = CountLeadingOnes(rn)
+    / _* "CLS"i _* rd:reg64 _* "," _* src1:reg64 _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CLS');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        return node;
+    }
+    //CLZ rd, rn rd = CountLeadingZeros(rn)
+    / _* "CLZ"i _* rd:reg64 _* "," _* src1:reg64 _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CLZ');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        return node;
+    }
+    //EXTR rd, rn, rm, #p rd = rnp−1:0:rmN0
+    / _* "EXTR"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* "," _* src3:immediate _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'EXTR');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        const src2Node = createNode('SOURCE2', 'SRC2');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(src2Node, src2);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2Node);
+        addChild(node, src3);
+        return node;
+    }
+    //{S,U}BFIZ rd, rn, #p, #n rd = rn? n−1:0 << p
+    / _* ins:("SBFIZ"i / "UBFIZ"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:immediate _* "," _* src3:immediate _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', ins);
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2);
+        addChild(node, src3);
+        return node;
+    }
+    //{S,U}BFX rd, rn, #p, #n rd = rn? n+p−1:p
+    / _* ins:("SBFX"i / "UBFX"i) _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:immediate _* "," _* src3:immediate _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', ins);
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2);
+        addChild(node, src3);
+        return node;
+    }
+    //{S,U}XT{B,H} rd, Wn rd = Wn
+    / _* ins:("SXTB"i / "SXTH"i / "UXTB"i / "UXTH"i) _* rd:reg64 _* "," _* src1:reg32 _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', ins);
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        return node;
+    }
+
+condi_instruc "conditional instructions"
+    //CSEL rd, rn, rm, cc if(cc) rd = rn; else rd = rm
+    = _* "CSEL"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* "," _* cc:condition_code _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CSEL');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        const src2Node = createNode('SOURCE2', 'SRC2');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(src2Node, src2);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2Node);
+        addChild(node, cc);
+        return node;
+    }
+    //CSET rd, cc if(cc) rd = 1; else rd = 0
+    / _* "CSET"i _* rd:reg64 _* "," _* cc:condition_code _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CSET');
+        const rdNode = createNode('DESTINATION', 'RD');
+        addChild(rdNode, rd);
+        addChild(node, rdNode);
+        addChild(node, cc);
+        return node;
+    }
+
+condition_code "condition code"
+    = "EQ"i { return createNode('CONDITION_CODE', 'EQ'); }
+    / "NE"i { return createNode('CONDITION_CODE', 'NE'); }
+    / "CS"i { return createNode('CONDITION_CODE', 'CS'); }
+    / "CC"i { return createNode('CONDITION_CODE', 'CC'); }
+    / "MI"i { return createNode('CONDITION_CODE', 'MI'); }
+    / "PL"i { return createNode('CONDITION_CODE', 'PL'); }
+    / "VS"i { return createNode('CONDITION_CODE', 'VS'); }
+    / "VC"i { return createNode('CONDITION_CODE', 'VC'); }
+    / "HI"i { return createNode('CONDITION_CODE', 'HI'); }
+    / "LS"i { return createNode('CONDITION_CODE', 'LS'); }
+    / "GE"i { return createNode('CONDITION_CODE', 'GE'); }
+    / "LT"i { return createNode('CONDITION_CODE', 'LT'); }
+    / "GT"i { return createNode('CONDITION_CODE', 'GT'); }
+    / "LE"i { return createNode('CONDITION_CODE', 'LE'); }
+    / "AL"i { return createNode('CONDITION_CODE', 'AL'); }    
+
+branch_instruc "branch instructions"
+    //B rel28 PC = PC + rel±27:2:02
+    = _* "B"i _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'B');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(labelNode, label);
+        addChild(node, labelNode);
+        return node;
+    }
+    //Bcc rel21 if(cc) PC = PC + rel±20:2:02
+    / _* "B"i _* cc:condition_code _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'B');
+        const ccNode = createNode('CONDITION_CODE', 'CONDITION_CODE');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(ccNode, cc);
+        addChild(labelNode, label);
+        addChild(node, ccNode);
+        addChild(node, labelNode);
+        return node;
+    }
+    //BL rel28 X30 = PC + 4; PC += rel±27:2:02
+    / _* "BL"i _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'BL');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(labelNode, label);
+        addChild(node, labelNode);
+        return node;
+    }
+    //BLR Xn X30 = PC + 4; PC = Xn
+    / _* "BLR"i _* src:reg64 _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'BLR');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        addChild(srcNode, src);
+        addChild(node, srcNode);
+        return node;
+    }
+    //BR Xn PC = Xn
+    / _* "BR"i _* src:reg64 _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'BR');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        addChild(srcNode, src);
+        addChild(node, srcNode);
+        return node;
+    }
+    //CBNZ rn, rel21 if(rn 6 = 0) PC += rel∅21:2:02
+    / _* "CBNZ"i _* src:reg64 _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CBNZ');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(srcNode, src);
+        addChild(labelNode, label);
+        addChild(node, srcNode);
+        addChild(node, labelNode);
+        return node;
+    }
+    //CBZ rn, rel21 if(rn = 0) PC += rel∅21:2:02
+    / _* "CBZ"i _* src:reg64 _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CBZ');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(srcNode, src);
+        addChild(labelNode, label);
+        addChild(node, srcNode);
+        addChild(node, labelNode);
+        return node;
+    }
+    //RET {Xn} PC = Xn
+    / _* "RET"i _* src:reg64? _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'RET');
+        if (src) {
+            const srcNode = createNode('SOURCE1', 'SRC1');
+            addChild(srcNode, src);
+            addChild(node, srcNode);
+        }
+        return node;
+    }
+    //TBNZ rn, #i, rel16 if(rni 6 = 0) PC += rel±15:2:0
+    / _* "TBNZ"i _* src:reg64 _* "," _* imm:immediate _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'TBNZ');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        const immNode = createNode('IMMEDIATE', 'IMM');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(srcNode, src);
+        addChild(immNode, imm);
+        addChild(labelNode, label);
+        addChild(node, srcNode);
+        addChild(node, immNode);
+        addChild(node, labelNode);
+        return node;
+    }
+    //TBZ rn, #i, rel16 if(rni = 0) PC += rel±15:2:02
+    / _* "TBZ"i _* src:reg64 _* "," _* imm:immediate _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'TBZ');
+        const srcNode = createNode('SOURCE1', 'SRC1');
+        const immNode = createNode('IMMEDIATE', 'IMM');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(srcNode, src);
+        addChild(immNode, imm);
+        addChild(labelNode, label);
+        addChild(node, srcNode);
+        addChild(node, immNode);
+        addChild(node, labelNode);
+        return node;
+    }
+
 
 reg64_or_reg32 "Registro de 64 o 32 Bits"
   = reg64
