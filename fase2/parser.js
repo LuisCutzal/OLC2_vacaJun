@@ -1157,28 +1157,28 @@ function peg$parse(input, options) {
         addChild(node, cc);
         return node;
     };
-  var peg$f55 = function() { return createNode('CONDITION_CODE', 'EQ'); };
-  var peg$f56 = function() { return createNode('CONDITION_CODE', 'NE'); };
-  var peg$f57 = function() { return createNode('CONDITION_CODE', 'CS'); };
-  var peg$f58 = function() { return createNode('CONDITION_CODE', 'CC'); };
-  var peg$f59 = function() { return createNode('CONDITION_CODE', 'MI'); };
-  var peg$f60 = function() { return createNode('CONDITION_CODE', 'PL'); };
-  var peg$f61 = function() { return createNode('CONDITION_CODE', 'VS'); };
-  var peg$f62 = function() { return createNode('CONDITION_CODE', 'VC'); };
-  var peg$f63 = function() { return createNode('CONDITION_CODE', 'HI'); };
-  var peg$f64 = function() { return createNode('CONDITION_CODE', 'LS'); };
-  var peg$f65 = function() { return createNode('CONDITION_CODE', 'GE'); };
-  var peg$f66 = function() { return createNode('CONDITION_CODE', 'LT'); };
-  var peg$f67 = function() { return createNode('CONDITION_CODE', 'GT'); };
-  var peg$f68 = function() { return createNode('CONDITION_CODE', 'LE'); };
-  var peg$f69 = function() { return createNode('CONDITION_CODE', 'AL'); };
+  var peg$f55 = function() { return 'EQ'; };
+  var peg$f56 = function() { return 'NE'; };
+  var peg$f57 = function() { return 'CS'; };
+  var peg$f58 = function() { return 'CC'; };
+  var peg$f59 = function() { return 'MI'; };
+  var peg$f60 = function() { return 'PL'; };
+  var peg$f61 = function() { return 'VS'; };
+  var peg$f62 = function() { return 'VC'; };
+  var peg$f63 = function() { return 'HI'; };
+  var peg$f64 = function() { return 'LS'; };
+  var peg$f65 = function() { return 'GE'; };
+  var peg$f66 = function() { return 'LT'; };
+  var peg$f67 = function() { return 'GT'; };
+  var peg$f68 = function() { return 'LE'; };
+  var peg$f69 = function() { return 'AL'; };
   var peg$f70 = function(cc, label) {
-        const node = createNode('INSTRUCTION', 'B');
+        const node = createNode('INSTRUCTION', 'B' + cc);
         const ccNode = createNode('CONDITION_CODE', 'CONDITION_CODE');
         const labelNode = createNode('LABEL', 'LABEL');
-        addChild(ccNode, cc);
+        //addChild(ccNode, cc);
         addChild(labelNode, label);
-        addChild(node, ccNode);
+        //addChild(node, ccNode);
         addChild(node, labelNode);
         return node;
     };
@@ -15140,7 +15140,7 @@ function peg$parse(input, options) {
             dot += 'digraph G {\n';
             function addNodes(node){
                 // ROOT
-                if (node.type === 'ROOT') {dot += `${node.id} [label="${node.type}"];\n`;}
+                if (node.type === 'START') {dot += `${node.id} [label="${node.type}"];\n`;}
                 // INSTRUCTION
                 else if (node.type === 'INSTRUCTION'){dot += `${node.id} [label="${node.type} ${node.value}"];\n`;}
                 // Registro General 64 Bits
@@ -15186,7 +15186,7 @@ function peg$parse(input, options) {
         dot += 'digraph G {\n';
         function addNodes(node){
             // ROOT
-            if (node.type === 'ROOT') {dot += `${node.id} [label="${node.type}"];\n`;}
+            if (node.type === 'START') {dot += `${node.id} [label="${node.type}"];\n`;}
             // INSTRUCTION
             else if (node.type === 'INSTRUCTION'){dot += `${node.id} [label="${node.type} ${node.value}"];\n`;}
             // Registro General 64 Bits
@@ -15212,7 +15212,7 @@ function peg$parse(input, options) {
         console.log(dot);
         return dot;
     }
-    const root = createNode('ROOT', 'ROOT');
+    const root = createNode('START', 'START');
 
   peg$result = peg$startRuleFunction();
 

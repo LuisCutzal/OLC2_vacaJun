@@ -21,7 +21,7 @@
             dot += 'digraph G {\n';
             function addNodes(node){
                 // ROOT
-                if (node.type === 'ROOT') {dot += `${node.id} [label="${node.type}"];\n`;}
+                if (node.type === 'START') {dot += `${node.id} [label="${node.type}"];\n`;}
                 // INSTRUCTION
                 else if (node.type === 'INSTRUCTION'){dot += `${node.id} [label="${node.type} ${node.value}"];\n`;}
                 // Registro General 64 Bits
@@ -67,7 +67,7 @@
         dot += 'digraph G {\n';
         function addNodes(node){
             // ROOT
-            if (node.type === 'ROOT') {dot += `${node.id} [label="${node.type}"];\n`;}
+            if (node.type === 'START') {dot += `${node.id} [label="${node.type}"];\n`;}
             // INSTRUCTION
             else if (node.type === 'INSTRUCTION'){dot += `${node.id} [label="${node.type} ${node.value}"];\n`;}
             // Registro General 64 Bits
@@ -93,7 +93,7 @@
         console.log(dot);
         return dot;
     }
-    const root = createNode('ROOT', 'ROOT');
+    const root = createNode('START', 'START');
 }
 // Iniciamos el análisis sintáctico con la regla inicial "start"
 start
@@ -895,32 +895,32 @@ condi_instruc "conditional instructions"
     }
 
 condition_code "condition code"
-    = "EQ"i { return createNode('CONDITION_CODE', 'EQ'); }
-    / "NE"i { return createNode('CONDITION_CODE', 'NE'); }
-    / "CS"i { return createNode('CONDITION_CODE', 'CS'); }
-    / "CC"i { return createNode('CONDITION_CODE', 'CC'); }
-    / "MI"i { return createNode('CONDITION_CODE', 'MI'); }
-    / "PL"i { return createNode('CONDITION_CODE', 'PL'); }
-    / "VS"i { return createNode('CONDITION_CODE', 'VS'); }
-    / "VC"i { return createNode('CONDITION_CODE', 'VC'); }
-    / "HI"i { return createNode('CONDITION_CODE', 'HI'); }
-    / "LS"i { return createNode('CONDITION_CODE', 'LS'); }
-    / "GE"i { return createNode('CONDITION_CODE', 'GE'); }
-    / "LT"i { return createNode('CONDITION_CODE', 'LT'); }
-    / "GT"i { return createNode('CONDITION_CODE', 'GT'); }
-    / "LE"i { return createNode('CONDITION_CODE', 'LE'); }
-    / "AL"i { return createNode('CONDITION_CODE', 'AL'); }    
+    = "EQ"i { return 'EQ'; }
+    / "NE"i { return 'NE'; }
+    / "CS"i { return 'CS'; }
+    / "CC"i { return 'CC'; }
+    / "MI"i { return 'MI'; }
+    / "PL"i { return 'PL'; }
+    / "VS"i { return 'VS'; }
+    / "VC"i { return 'VC'; }
+    / "HI"i { return 'HI'; }
+    / "LS"i { return 'LS'; }
+    / "GE"i { return 'GE'; }
+    / "LT"i { return 'LT'; }
+    / "GT"i { return 'GT'; }
+    / "LE"i { return 'LE'; }
+    / "AL"i { return 'AL'; }
 
 branch_instruc "branch instructions"
     //Bcc rel21 if(cc) PC = PC + rel±20:2:02
     = _* "B"i _* cc:condition_code _* label:label _* comment? "\n"?
     {
-        const node = createNode('INSTRUCTION', 'B');
+        const node = createNode('INSTRUCTION', 'B' + cc);
         const ccNode = createNode('CONDITION_CODE', 'CONDITION_CODE');
         const labelNode = createNode('LABEL', 'LABEL');
-        addChild(ccNode, cc);
+        //addChild(ccNode, cc);
         addChild(labelNode, label);
-        addChild(node, ccNode);
+        //addChild(node, ccNode);
         addChild(node, labelNode);
         return node;
     }

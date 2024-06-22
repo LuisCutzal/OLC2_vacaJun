@@ -325,14 +325,17 @@ function generateCST(DOTstring) {
         },
         layout: {
             hierarchical: {
-                levelSeparation: 60,
+                /*levelSeparation: 60,
                 nodeSpacing: 80,
-                parentCentralization: true,
+                parentCentralization: true,*/
                 direction: 'UD',        // UD, DU, LR, RL
                 sortMethod: 'directed',  // hubsize, directed
-                shakeTowards: 'roots'  // roots, leaves                        
+                //shakeTowards: 'roots'  // roots, leaves                        
             },
         },
+        edges: { 
+            arrows: "to",
+        }
     };
     var network = new vis.Network(container, data, options);
 };
@@ -378,7 +381,7 @@ function generateQuads(result) {
                     break;
                 case "LABEL":
                     // Verificar si el label corresponde a una etiqueta de salto y asignarla al resultado
-                    if (element.value === 'LBL') quads[quads.length - 1].setResult(element.children[0].value);
+                    if (element.value === 'LABEL') quads[quads.length - 1].setResult(element.children[0].value);
                     break;
 
             }
