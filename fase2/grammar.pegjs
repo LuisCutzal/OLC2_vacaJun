@@ -163,12 +163,14 @@ instruction
     / i:asr_inst
     / i:ror_inst
     / i:cmp_inst
+    /*
     / i:beq_inst
     / i:bne_inst
     / i:bgt_inst
     / i:blt_inst
     / i:bl_inst
     / i:b_inst
+    */
     / i:ret_inst
     / i:svc_inst
     / i:bit_manipulation
@@ -639,7 +641,7 @@ sdiv_inst
         }
 // Instrucciones AND 64 bits y 32 bits (AND)        
 and_inst
-    = _* ins:("AND"i/ "ANDS") _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
+    = _* ins:("ANDS"i/ "AND") _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:operand64 _* comment? "\n"?
         {
             const node = createNode('INSTRUCTION', ins);
             const rdNode = createNode('DESTINATION', 'RD');
@@ -866,6 +868,31 @@ condi_instruc "conditional instructions"
         addChild(node, cc);
         return node;
     }
+    / _* "CSEL"i _* rd:reg32 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* cc:condition_code _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CSEL');
+        const rdNode = createNode('DESTINATION', 'RD');
+        const src1Node = createNode('SOURCE1', 'SRC1');
+        const src2Node = createNode('SOURCE2', 'SRC2');
+        addChild(rdNode, rd);
+        addChild(src1Node, src1);
+        addChild(src2Node, src2);
+        addChild(node, rdNode);
+        addChild(node, src1Node);
+        addChild(node, src2Node);
+        addChild(node, cc);
+        return node;
+    }
+    //CSET rd, cc if(cc) rd = 1; else rd = 0
+    / _* "CSET"i _* rd:reg32 _* "," _* cc:condition_code _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'CSET');
+        const rdNode = createNode('DESTINATION', 'RD');
+        addChild(rdNode, rd);
+        addChild(node, rdNode);
+        addChild(node, cc);
+        return node;
+    }
 
 condition_code "condition code"
     = "EQ"i { return createNode('CONDITION_CODE', 'EQ'); }
@@ -885,17 +912,8 @@ condition_code "condition code"
     / "AL"i { return createNode('CONDITION_CODE', 'AL'); }    
 
 branch_instruc "branch instructions"
-    //B rel28 PC = PC + rel±27:2:02
-    = _* "B"i _* label:label _* comment? "\n"?
-    {
-        const node = createNode('INSTRUCTION', 'B');
-        const labelNode = createNode('LABEL', 'LABEL');
-        addChild(labelNode, label);
-        addChild(node, labelNode);
-        return node;
-    }
     //Bcc rel21 if(cc) PC = PC + rel±20:2:02
-    / _* "B"i _* cc:condition_code _* label:label _* comment? "\n"?
+    = _* "B"i _* cc:condition_code _* label:label _* comment? "\n"?
     {
         const node = createNode('INSTRUCTION', 'B');
         const ccNode = createNode('CONDITION_CODE', 'CONDITION_CODE');
@@ -931,6 +949,15 @@ branch_instruc "branch instructions"
         const srcNode = createNode('SOURCE1', 'SRC1');
         addChild(srcNode, src);
         addChild(node, srcNode);
+        return node;
+    }
+    //B rel28 PC = PC + rel±27:2:02
+    / _* "B"i _* label:label _* comment? "\n"?
+    {
+        const node = createNode('INSTRUCTION', 'B');
+        const labelNode = createNode('LABEL', 'LABEL');
+        addChild(labelNode, label);
+        addChild(node, labelNode);
         return node;
     }
     //CBNZ rn, rel21 if(rn 6 = 0) PC += rel∅21:2:02
@@ -1042,19 +1069,23 @@ ldr_source
         {
             return [r, r2, s, i2];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "," _* s:shift_op _* i2:immediate _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "," _* s:shift_op _* i2:immediate _* "]"
         {
             return [r, i, s, i2];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "," _* e:extend_op _* "]" 
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "," _* e:extend_op _* "]" 
         {
             return [r, i, e];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "]"
         {
             return [r, i];
         }
-    / "[" _* r:reg64 _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:reg64_or_reg32 _* "]"
+        {
+            return [r, i];
+        }
+    / "[" _* r:reg64_or_reg32 _* "]"
         {
             return [r];
         }
@@ -1144,19 +1175,23 @@ str_source
         {
             return [r, r2, s, i2];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "," _* s:shift_op _* i2:immediate _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "," _* s:shift_op _* i2:immediate _* "]"
         {
             return [r, i, s, i2];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "," _* e:extend_op _* "]" 
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "," _* e:extend_op _* "]" 
         {
             return [r, i, e];
         }
-    / "[" _* r:reg64 _* "," _* i:immediate _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:immediate _* "]"
         {
             return [r, i];
         }
-    / "[" _* r:reg64 _* "]"
+    / "[" _* r:reg64_or_reg32 _* "," _* i:reg64_or_reg32 _* "]"
+        {
+            return [r, i];
+        }
+    / "[" _* r:reg64_or_reg32 _* "]"
         {
             return [r];
         }
