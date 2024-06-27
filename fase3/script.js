@@ -193,7 +193,6 @@ const analysis = async () => {
     errorCounter = 0;
     try {
         let resultado = parse(text);
-        console.log(resultado);
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
         addQuadsToTable()
