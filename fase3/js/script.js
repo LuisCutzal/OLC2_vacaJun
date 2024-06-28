@@ -199,7 +199,7 @@ btnT.addEventListener('click', () => graphVCST());
 /**contador para ejecucion */
 
 let contadorId;
-let tiempoInicio;
+var tiempoInicio;
 
 // Función para iniciar el contador
 // Función para iniciar el contador
