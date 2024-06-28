@@ -1,4 +1,8 @@
+import {parse, SyntaxError, StartRules} from './parser/parser.mjs'
+
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
+let tiempoInicio;
+
 /*Scrips Code Mirror */
 $(document).ready(function () {
     Arm64Editor = editor('editor');
@@ -168,7 +172,7 @@ const analysis = async () => {
     const text = Arm64Editor.getValue();
     try {
         iniciarContador();
-        resultado = PARSE.parse(text);
+        let resultado = parse(text);
         graphCST(resultado.getDot(resultado));
         terminarContador();
         var jsonString = JSON.stringify(resultado.Text(), null, 2);
