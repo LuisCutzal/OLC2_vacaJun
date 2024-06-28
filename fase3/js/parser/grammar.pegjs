@@ -296,6 +296,9 @@ invalid
         return createNode(TYPE.ERROR, 'Error', text); // Continuar con el análisis
     }
 
+
+    
+
 // ************************************************** Directivas ************************************************** \\
 directive_section
     = d:directive _* de:directive_exp? _* comment? "\n" exp:(expression)*
