@@ -1,3 +1,5 @@
+import {parse, SyntaxError, StartRules} from './parser/parser.mjs'
+
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
 /*Scrips Code Mirror */
 $(document).ready(function () {
@@ -168,7 +170,7 @@ const analysis = async () => {
     const text = Arm64Editor.getValue();
     try {
         iniciarContador();
-        resultado = PARSE.parse(text);
+        let resultado = parse(text);
         graphCST(resultado.getDot(resultado));
         terminarContador();
         var jsonString = JSON.stringify(resultado.Text(), null, 2);
@@ -197,6 +199,7 @@ btnT.addEventListener('click', () => graphVCST());
 /**contador para ejecucion */
 
 let contadorId;
+let tiempoInicio;
 
 // Función para iniciar el contador
 // Función para iniciar el contador
