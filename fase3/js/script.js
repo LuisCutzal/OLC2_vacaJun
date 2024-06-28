@@ -1,6 +1,8 @@
 import {parse, SyntaxError, StartRules} from './parser/parser.mjs'
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
+let tiempoInicio;
+
 /*Scrips Code Mirror */
 $(document).ready(function () {
     Arm64Editor = editor('editor');
@@ -199,7 +201,6 @@ btnT.addEventListener('click', () => graphVCST());
 /**contador para ejecucion */
 
 let contadorId;
-var tiempoInicio;
 
 // Función para iniciar el contador
 // Función para iniciar el contador
