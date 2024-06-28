@@ -843,7 +843,7 @@ bit_manipulation "Ins bits"
 
 condi_instruc "conditional instructions"
     //CSEL rd, rn, rm, cc if(cc) rd = rn; else rd = rm
-    = _* "CSEL"i _* rd:reg64 _* "," _* src1:reg64 _* "," _* src2:reg64 _* "," _* cc:condition_code _* comment? "\n"?
+    = _* "CSEL"i _* rd:reg64_or_reg32 _* "," _* src1:reg64_or_reg32 _* "," _* src2:reg64_or_reg32 _* "," _* cc:condition_code _* comment? "\n"?
     {
         const node = createNode('INSTRUCTION', 'CSEL');
         const rdNode = createNode('DESTINATION', 'RD');
@@ -855,42 +855,18 @@ condi_instruc "conditional instructions"
         addChild(node, rdNode);
         addChild(node, src1Node);
         addChild(node, src2Node);
-        addChild(node, cc);
+        addChild(node, createNode('CONDITION_CODE', cc));
+        
         return node;
     }
     //CSET rd, cc if(cc) rd = 1; else rd = 0
-    / _* "CSET"i _* rd:reg64 _* "," _* cc:condition_code _* comment? "\n"?
+    / _* "CSET"i _* rd:reg64_or_reg32 _* "," _* cc:condition_code _* comment? "\n"?
     {
         const node = createNode('INSTRUCTION', 'CSET');
         const rdNode = createNode('DESTINATION', 'RD');
         addChild(rdNode, rd);
         addChild(node, rdNode);
-        addChild(node, cc);
-        return node;
-    }
-    / _* "CSEL"i _* rd:reg32 _* "," _* src1:reg32 _* "," _* src2:reg32 _* "," _* cc:condition_code _* comment? "\n"?
-    {
-        const node = createNode('INSTRUCTION', 'CSEL');
-        const rdNode = createNode('DESTINATION', 'RD');
-        const src1Node = createNode('SOURCE1', 'SRC1');
-        const src2Node = createNode('SOURCE2', 'SRC2');
-        addChild(rdNode, rd);
-        addChild(src1Node, src1);
-        addChild(src2Node, src2);
-        addChild(node, rdNode);
-        addChild(node, src1Node);
-        addChild(node, src2Node);
-        addChild(node, cc);
-        return node;
-    }
-    //CSET rd, cc if(cc) rd = 1; else rd = 0
-    / _* "CSET"i _* rd:reg32 _* "," _* cc:condition_code _* comment? "\n"?
-    {
-        const node = createNode('INSTRUCTION', 'CSET');
-        const rdNode = createNode('DESTINATION', 'RD');
-        addChild(rdNode, rd);
-        addChild(node, rdNode);
-        addChild(node, cc);
+        addChild(node, createNode('CONDITION_CODE', cc));
         return node;
     }
 
