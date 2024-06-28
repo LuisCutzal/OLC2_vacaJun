@@ -60,6 +60,7 @@
         EXPRESSIONS: 'Expresiones',
         DIRECTIVE: 'Directiva',
         ROOT: 'Raiz',
+        ERROR: 'Error',
         /*-----------------------------------------------------------*/
         AT: 'AT', BRK: 'BRK', CLREX: 'CLREX', DMB: 'DMB', DSB: 'DSB', ERET: 'ERET',
         HVC: 'HVC', ISB: 'ISB', MRS: 'MRS', MSR: 'MSR', NOP: 'NOP', SEV: 'SEV', SEVL: 'SEVL',
@@ -265,12 +266,36 @@
     function equalType(value, ...types){
         return types.some(type => type === value);
     }
-    const root = createNode(TYPE.ROOT, 'CALIFICACION', 'Raiz del Arbol Concreto');
+    const root = createNode(TYPE.ROOT, 'root', 'Raiz del Arbol Concreto');
+    
+    //list of erreors found in the code
+    const errors = [];
+
+    function buildSyntaxError(message, location, invalidChar, type){
+        const error = new Error(`${message}: '${invalidChar}'`);
+        error.location = location;
+        error.text = invalidChar;
+        error.type = type;
+        return error;
+    }
+
 }
 start
-    = list:(directive_section / code_section / comment / blank_line)* EOI 
+    = list:(directive_section / code_section / comment / invalid / blank_line )* EOI 
     {root.children = [...list]; root.children = root.children = root.children.filter(node => node.type !== TYPE.BLANK);
-    root.children = root.children.filter(node => node.type !== TYPE.COMMENT); return root;}
+    root.children = root.children.filter(node => node.type !== TYPE.COMMENT); return {root, errors}}
+// ************************************************** Generate Errors ************************************************** \\
+invalid
+    = invalidToken:(!directive_name !code_section !comment !blank_line !_ .)+ {
+        const text = invalidToken.join('');
+        errors.push(buildSyntaxError("Invalid token", location(), invalidToken.join(''), "Léxico"));
+        return createNode(TYPE.ERROR, 'Error', text); // Continuar con el análisis
+    }
+    / invalidToken:(!blank_line .)+ {
+        errors.push(buildSyntaxError("Unrecognized input", location(), invalidToken.join(''), "Sintáctico"));
+        return createNode(TYPE.ERROR, 'Error', text); // Continuar con el análisis
+    }
+
 // ************************************************** Directivas ************************************************** \\
 directive_section
     = d:directive _* de:directive_exp? _* comment? "\n" exp:(expression)*
@@ -2158,6 +2183,9 @@ int "Entero"
 // ************************************************** Línea en blanco ************************************************** \\
 blank_line "Linea En Blanco"
     = _* comment? "\n" _* {return createNode(TYPE.BLANK, text(), '');}
+
+new_line "Nueva Linea"
+    = newline:("\r\n" / "\n" / "\r") {return createNode(TYPE.NEWLINE, text(), '');}
 // ************************************************** Comentarios ************************************************** \\
 comment "Comentario"
     = c:lcomment {return c;}
