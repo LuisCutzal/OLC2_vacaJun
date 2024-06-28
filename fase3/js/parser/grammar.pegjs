@@ -266,6 +266,7 @@
     function equalType(value, ...types){
         return types.some(type => type === value);
     }
+<<<<<<< Updated upstream
     const root = createNode(TYPE.ROOT, 'root', 'Raiz del Arbol Concreto');
     
     //list of erreors found in the code
@@ -276,11 +277,22 @@
         error.location = location;
         error.text = invalidChar;
         error.type = type;
+=======
+    const root = createNode(TYPE.ROOT, 'CALIFICACION', 'Raiz del Arbol Concreto');
+
+    const errors = [];
+
+    function buildSyntaxError(message, location, invalidChar) {
+        const error = new Error(`${message}: '${invalidChar}'`);
+        error.location = location;
+        error.invalidChar = invalidChar;
+>>>>>>> Stashed changes
         return error;
     }
 
 }
 start
+<<<<<<< Updated upstream
     = list:(directive_section / code_section / comment / invalid / blank_line )* EOI 
     {root.children = [...list]; root.children = root.children = root.children.filter(node => node.type !== TYPE.BLANK);
     root.children = root.children.filter(node => node.type !== TYPE.COMMENT); return {root, errors}}
@@ -294,6 +306,24 @@ invalid
     / invalidToken:(!blank_line .)+ {
         errors.push(buildSyntaxError("Unrecognized input", location(), invalidToken.join(''), "Sintáctico"));
         return createNode(TYPE.ERROR, 'Error', text); // Continuar con el análisis
+=======
+    = list:(directive_section / code_section / comment /  blank_line)* EOI 
+    {root.children = [...list]; root.children = root.children = root.children.filter(node => node.type !== TYPE.BLANK);
+    root.children = root.children.filter(node => node.type !== TYPE.COMMENT); return {root, errors};}
+
+invalid
+    // = invalidToken:(!code_section !comment !blank_line !_ .)+ {
+    //     errors.push(buildSyntaxError("Invalid token", location(), invalidToken.join(''), "Léxico"));
+    //     return null; // Continuar con el análisis
+    // }
+    // / invalidToken:(!comment blank_line .)+ {
+    //     errors.push(buildSyntaxError("Invalid Sintax", location(), invalidToken.join(''), "Sintáctico"));
+    //     return null; // Continuar con el análisis
+    // }
+    = invalidToken:(!blank_line .)+ {
+        errors.push(buildSyntaxError("Unrecognized input", location(), invalidToken.join(''), "Sintáctico"));
+        return null; // Continuar con el análisis
+>>>>>>> Stashed changes
     }
 
 // ************************************************** Directivas ************************************************** \\
@@ -301,6 +331,8 @@ directive_section
     = d:directive _* de:directive_exp? _* comment? "\n" exp:(expression)*
     {const n = createNode(TYPE.DIRECTIVE_SECTION, 'SECCION DE DIRECTIVAS', ''); n.addChild(d); if(de){n.addChild(de);} 
     exp.forEach(e => {if(e instanceof CSTnode &&  e.type !== TYPE.BLANK && e.type !== TYPE.COMMENT){n.addChild(e);}}); root.addChild(n); return n;}
+    / error:invalid {return error;} 
+
 directive_exp
     = e:directive {const n = createNode(TYPE.DIRECT_EXP, 'EXPRESION DIRECTIVA', ''); n.addChild(e); return n;}
     / i:identifier c:comma _* int:int {const n = createNode(TYPE.DIRECT_EXP, 'EXPRESION DIRECTIVA', ''); n.addChild(i); n.addChild(c); n.addChild(int); return n;}
@@ -329,6 +361,8 @@ code_section
     = l:label _* comment? "\n" list:(instruction / blank_line / comment)+
     {const n = createNode(TYPE.INSTRUCTION_SECTION, 'SECCION DE INSTRUCCIONES', ''); n.addChild(l); const inst = createNode(TYPE.INSTRUCTIONS, 'INSTRUCCIONES', '');
     list.forEach(e => {if(e instanceof CSTnode &&  e.type !== TYPE.BLANK && e.type !== TYPE.COMMENT){inst.addChild(e);}}); n.addChild(inst); return n;}
+    / error:invalid {return error;}
+    
 // ************************************************** Instrucciones en ARM64 v8 ************************************************** \\
 instruction
     = i:aadd_inst _* comment? "\n"? {return i;}
