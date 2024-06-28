@@ -1,4 +1,4 @@
-import {parse, SyntaxError, StartRules} from './parser/parser.mjs'
+import {parse, SyntaxError, StartRules} from './parser/parser.js'
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "";
 let tiempoInicio;
