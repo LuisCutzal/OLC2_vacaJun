@@ -26,7 +26,11 @@ btnClean.addEventListener('click', () => {
     cleanQuadsTable(); // Limpiar la tabla de cuadruplos
 })
 
-
+//add tab
+const btnAddTab = document.getElementById('addTab')
+btnAddTab.addEventListener('click', () => {
+    addTab();
+})
 
 function addTab() {
     // Obtener el listado de las pestañas actuales
