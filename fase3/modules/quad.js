@@ -69,6 +69,8 @@ class Quadruple {
 
 }
 
+import { createCode } from "./const.js";
+
 export let quads = [];
 export function generateQuads(result) {
 
@@ -80,6 +82,7 @@ export function generateQuads(result) {
                 case "SECTION": // crear un nuevo cuadruplo por cada sección
                     let quad = new Quadruple();
                     quad.setOperator(element.value);
+                    quad.setArg4(createCode(element.value));
                     quads.push(quad);
 
                     switch (element.value) {
