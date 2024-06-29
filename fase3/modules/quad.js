@@ -4,7 +4,7 @@ class Quadruple {
         this.arg1 = '-';
         this.arg2 = '-';
         this.arg3 = '-';
-        this.arg4 = '-';
+        this.opCode = '-';
         this.res = '-';
     }
 
@@ -14,7 +14,7 @@ class Quadruple {
             Arg1: this.arg1,
             Arg2: this.arg2,
             Arg3: this.arg3,
-            Arg4: this.arg4,
+            OpCode: this.opCode,
             Result: this.res,
         };
     }
@@ -51,12 +51,12 @@ class Quadruple {
         return this.arg3;
     }
 
-    setArg4(arg4) {
-        if (arg4) this.arg4 = arg4;
+    setOpCode(opCode) {
+        if (opCode) this.opCode = opCode;
     }
 
-    getArg4() {
-        return this.arg4;
+    getOpCode() {
+        return this.opCode;
     }
 
     setResult(res) {
@@ -82,7 +82,7 @@ export function generateQuads(result) {
                 case "SECTION": // crear un nuevo cuadruplo por cada sección
                     let quad = new Quadruple();
                     quad.setOperator(element.value);
-                    quad.setArg4(createCode(element.value));
+                    quad.setOpCode(createCode(element.value));
                     quads.push(quad);
 
                     switch (element.value) {

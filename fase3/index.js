@@ -348,19 +348,21 @@ function addQuadsToTable() {
     quads.forEach(function (q) {
         const row = table.insertRow();
 
-        const cellOp = row.insertCell(0);
-        const cellArg1 = row.insertCell(1);
-        const cellArg2 = row.insertCell(2);
-        const cellArg3 = row.insertCell(3);
-        const cellArg4 = row.insertCell(4);
+        const cellOpCode = row.insertCell(0);
+        const cellOp = row.insertCell(1);
+        const cellArg1 = row.insertCell(2);
+        const cellArg2 = row.insertCell(3);
+        const cellArg3 = row.insertCell(4);
         const cellRes = row.insertCell(5);
 
+
+        cellOpCode.textContent = q.getOpCode();
         cellOp.textContent = q.getOperator();
         cellArg1.textContent = q.getArg1();
         cellArg2.textContent = q.getArg2();
         cellArg3.textContent = q.getArg3();
-        cellArg4.textContent = q.getArg4();
         cellRes.textContent = q.getResult();
+
     });
 }
 
