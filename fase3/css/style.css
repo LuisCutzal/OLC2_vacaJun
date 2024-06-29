@@ -249,7 +249,7 @@ h4 {
 
 
 .CodeMirror,
-#quadruples {
+.infoTable {
     height: 90%;
     width: 100%;
 
@@ -260,7 +260,7 @@ h4 {
 
 
 
-#quadruples {
+.infoTable {
     background-color: #000;
     overflow: auto;
 }

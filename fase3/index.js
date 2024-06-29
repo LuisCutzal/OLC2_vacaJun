@@ -113,9 +113,23 @@ function showOutputTab(id) {
     if (id == 0) {
         codeMirrors[codeMirrors.length - 1].style.display = 'block'; // mostrar la consola de salida
         document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
-    } else {
+        document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
+        document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+    } else if (id == 1) {
         codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
         document.getElementById('quadruples').style.display = 'block'; // mostrar la tabla de cuadruplos
+        document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
+        document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+    } else if (id == 2) {
+        codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
+        document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
+        document.getElementById('registers').style.display = 'block'; // mostrar la tabla de registros
+        document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+    } else {
+        codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
+        document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
+        document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
+        document.getElementById('memory').style.display = 'block'; // mostrar la tabla de memoria
     }
 }
 
@@ -371,3 +385,9 @@ btnConsole.addEventListener('click', () => { showOutputTab(0) });
 
 const btnQuad = document.getElementById('quad_tab');
 btnQuad.addEventListener('click', () => { showOutputTab(1) });
+
+const btnReg = document.getElementById('reg_tab');
+btnReg.addEventListener('click', () => { showOutputTab(2) });
+
+const btnMem = document.getElementById('mem_tab');
+btnMem.addEventListener('click', () => { showOutputTab(3) });
