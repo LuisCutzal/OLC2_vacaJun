@@ -1,26 +1,27 @@
-let memory = []
-
-//init memory with size
-function initMemory(size) {
-    if (size <= 0) {
-        throw new Error('Memory size must be greater than 0')
+class Memory {
+    //default size is 64MB
+    constructor(size = 64 * 1024 * 1024){
+        this.memory = new Array(size).fill(0n)
     }
-    memory = new Array(size).fill(0)
-}
-
-//get memory
-function getMemory() {
-    return memory
-}
-
-//set memory at address
-function setMemory(address, value) {
-    if (address < 0 || address >= memory.length) {
-        throw new Error('Invalid memory address')
+    get(address){
+        if (address < 0 || address >= this.memory.length){
+            throw new Error("Invalid memory access")
+        }
+        return this.memory[address]
     }
-    memory[address] = value
+    set(address, value){
+        if (address < 0 || address >= this.memory.length){
+            throw new Error("Invalid memory access")
+        }
+        this.memory[address] = value
+    }
+    dump(){
+        return this.memory
+    }
+    //optional: return value at address to hex value
+    toHex(){
+        return this.memory.map(value => value.toString(16).padStart(2, '0'))
+    }
 }
-
-export default {initMemory, getMemory, setMemory}
 
 
