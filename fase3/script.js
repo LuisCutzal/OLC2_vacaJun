@@ -1,4 +1,4 @@
-
+import {parse, StartRules, SyntaxError } from './parser.js'
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [], quads = [];
 
@@ -185,14 +185,14 @@ function isLexicalError(e) {
 let errorCounter = 0;
 
 const analysis = async () => {
-    startTime = performance.now(); // Guardar tiempo de inicio
+    let startTime = performance.now(); // Guardar tiempo de inicio
     const text = Arm64Editor.getValue();
     //const text = currentStr;
     cleanErrorsTable();
     cleanQuadsTable();
     errorCounter = 0;
     try {
-        let resultado = PEG.parse(text);
+        let resultado = parse(text);
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
         addQuadsToTable();
@@ -213,7 +213,7 @@ const analysis = async () => {
             consoleResult.setValue("VALIDO");
         }*/
     } catch (e) {
-        if (e instanceof PEG.SyntaxError) {
+        if (e instanceof SyntaxError) {
             const errorType = 'Sintáctico';
             const errorMessage = e.message;
             const errorLocation = `Fila: ${e.location.start.line}, Columna: ${e.location.start.column}`;
@@ -227,7 +227,7 @@ const analysis = async () => {
         }
     }
 
-    endTime = performance.now();
+    let endTime = performance.now();
     const elapsedTime = (endTime - startTime).toFixed(3);
     // Mostrar el tiempo transcurrido en un elemento del DOM
     const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
@@ -241,10 +241,6 @@ const analysis = async () => {
     }, 3000);
 
 };
-
-function isLexicalError(error) {
-    return error.location.start.line === 1;
-}
 
 function cleanErrorsTable() {
     const table = document.getElementById('errorsTable');
