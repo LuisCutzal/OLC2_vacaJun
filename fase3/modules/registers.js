@@ -12,21 +12,38 @@ class Registers {
         }
     }
 
+    //parse register name to typeRegister and index
+    parseRegister(regString) {
+        const match = regString.match(/^([a-z]+)(\d+)$/)
+        if (!match) {
+            throw new Error(`Invalid register string: ${regString}`)
+        }
+        return {
+            type: match[1],
+            index: parseInt(match[2])
+        }
+    }
+
     // return register of typeRegister
     getRegister(typeRegister) {
-        if (this.registers[typeRegister] !== undefined) {
-            return this.registers[typeRegister]
+        const { type, index } = this.parseRegister(typeRegister);
+        if (this.registers[type] !== undefined && index < this.registers[type].length) {
+            return this.registers[type][index];
         } else {
-            throw new Error('Invalido Tipo de Registro')
+            throw new Error('Invalid typeRegister or index out of range');
         }
     }
 
     // set register of typeRegister
-    setRegister(typeRegister, index, value) {
-        if (this.registers[typeRegister] !== undefined) {
-            this.registers[typeRegister][index] = typeRegister === 'x' || typeRegister === 'd' || typeRegister === 'q' || typeRegister === 'v' ? BigInt(value) : value
+    setRegister(regString, value) {
+        const { type, index } = this.parseRegister(regString);
+        if (this.registers[type] !== undefined && index < this.registers[type].length) {
+            this.registers[type][index] =
+                (type === 'x' || type === 'd' || type === 'q' || type === 'v')
+                    ? BigInt(value)
+                    : value;
         } else {
-            throw new Error('Invalido Tipo de Registro')
+            throw new Error('Invalid typeRegister or index out of range');
         }
     }
     //Optional: Method to get hex respresentation all of registers

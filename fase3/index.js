@@ -2,11 +2,11 @@ import { parse, StartRules, SyntaxError } from './parser/parser.js'
 import { openFileDialog } from './views/openFile.js'
 import { quads, generateQuads } from './modules/quad.js'
 import { Registers, specialRegisters } from './modules/registers.js'
-import { initMemory, getMemory, setMemory } from './modules/memory.js'
+import { Memory, Stack } from './modules/memory.js'
 
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
-const regs = new Registers(), specialRegs = new specialRegisters();
+const regs = new Registers(), specialRegs = new specialRegisters(), memory = new Memory();
 
 
 $(document).ready(function () {
@@ -421,8 +421,7 @@ function showRegisters() {
 }
 
 function showMemory() {
-    initMemory()
-    console.log(getMemory());
+    const mem = memory.toHex();
 }
 
 const btnConsole = document.getElementById('console_tab');
