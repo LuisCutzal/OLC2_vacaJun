@@ -5,13 +5,13 @@ class Memory {
     }
     get(address){
         if (address < 0 || address >= this.memory.length){
-            throw new Error("Invalid memory access")
+            throw new Error("Invalid memory address")
         }
         return this.memory[address]
     }
     set(address, value){
         if (address < 0 || address >= this.memory.length){
-            throw new Error("Invalid memory access")
+            throw new Error("Invalid memory address")
         }
         this.memory[address] = value
     }
@@ -23,5 +23,4 @@ class Memory {
         return this.memory.map(value => value.toString(16).padStart(2, '0'))
     }
 }
-
 
