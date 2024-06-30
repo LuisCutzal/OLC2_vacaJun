@@ -211,6 +211,10 @@ const analysis = async () => {
         let resultado = parse(text);
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
+        console.log(quads)
+        let cpu = new CPU();
+        cpu.instructions = quads;
+        cpu.run();
         addQuadsToTable();
 
 
