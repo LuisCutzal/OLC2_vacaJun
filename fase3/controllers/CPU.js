@@ -17,7 +17,7 @@ class CPU{
     constructor(){
         this.registers = new Registers();
         this.specialRegisters = new specialRegisters();
-        this.memory = new Memory(4*1024);
+        this.memory = new Memory(32*1024);
         this.stack = new Stack();    
         this.instructions = [];
         this.specialRegisters.PC = 0;
@@ -30,7 +30,7 @@ class CPU{
     init(){
         this.registers = new Registers();
         this.stack = new Stack();
-        this.memory = new Memory();
+        this.memory = new Memory(32*1024);
         this.specialRegisters.PC = 0;
         this.flag.init();
         this.output="";
@@ -51,7 +51,6 @@ class CPU{
                     console.log(this.registers)
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
-                    console.log(this.registers.toHex())
                     console.log("value flag C: "+this.flag.C) 
                     let arg1 = this.registers[op.arg1]
                     this.registers[op.res] = arg1 + op.arg2;
