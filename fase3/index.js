@@ -12,6 +12,8 @@ $(document).ready(function () {
     addTab();
     consoleResult = editor('console_log', '', true, true, false);
     btnConsole.click();
+    createRegisters();
+    createMemory();
 });
 
 //open file dialog
@@ -213,7 +215,7 @@ const analysis = async () => {
         cpu.run();
         showRegisters(cpu.registers, cpu.specialRegisters);
         showMemory(cpu.memory);
-       
+
 
 
 
@@ -390,13 +392,12 @@ function addQuadsToTable() {
     });
 }
 
-function showRegisters(regs, specialRegs) {
+function createRegisters() {
+    let cpu = new CPU();
+
     const table = document.getElementById('registerBody');
 
-    const registers = regs.toHex()
-
-
-    for (const [key, value] of Object.entries(registers)) {
+    for (const [key, value] of Object.entries(cpu.registers.toHex())) {
         for (let i = 0; i < value.length; i++) {
             const row = table.insertRow();
             const cellReg = row.insertCell(0);
@@ -407,10 +408,7 @@ function showRegisters(regs, specialRegs) {
         }
     }
 
-
-    const specials = specialRegs.toHex();
-
-    for (const [key, value] of Object.entries(specials)) {
+    for (const [key, value] of Object.entries(cpu.specialRegisters.toHex())) {
         const row = table.insertRow();
         const cellReg = row.insertCell(0);
         const cellVal = row.insertCell(1);
@@ -422,9 +420,10 @@ function showRegisters(regs, specialRegs) {
 
 }
 
-function showMemory(memory) {
+function createMemory() {
+    let cpu = new CPU();
     const table = document.getElementById('memoryBody');
-    const mem = memory.toHex();
+    const mem = cpu.memory.toHex();
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < mem.length; i++) {
@@ -450,6 +449,41 @@ function showMemory(memory) {
 
     table.appendChild(fragment);
 }
+
+function showRegisters(regs, specialRegs) {
+    const table = document.getElementById('registerBody');
+    const rows = table.rows;
+    let cont = 0;
+
+    for (const [key, value] of Object.entries(regs.toHex())) {
+        for (let i = 0; i < value.length; i++) {
+            rows[cont].cells[0].textContent = key + i;
+            rows[cont].cells[1].textContent = value[i];
+            cont++;
+        }
+    }
+
+    for (const [key, value] of Object.entries(specialRegs.toHex())) {
+        rows[cont].cells[0].textContent = key;
+        rows[cont].cells[1].textContent = value;
+        cont++;
+    }
+
+}
+
+function showMemory(memory) {
+    const table = document.getElementById('memoryBody');
+    const mem = memory.toHex();
+
+    for (let i = 0; i < mem.length; i++) {
+        table.rows[i].cells[0].textContent = mem[i].address;
+        table.rows[i].cells[1].textContent = mem[i].hex;
+        table.rows[i].cells[2].textContent = mem[i].ascii;
+    }
+}
+
+
+
 
 const btnConsole = document.getElementById('console_tab');
 btnConsole.addEventListener('click', () => { showOutputTab(0) });
