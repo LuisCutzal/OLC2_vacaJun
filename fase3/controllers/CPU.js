@@ -3,8 +3,8 @@ import {Registers, specialRegisters} from '../modules/registers.js'
 import {Memory, Stack} from '../modules/memory.js'
 import {Arithmetic} from '../modules/Arithmetic.js'
 import {Logical} from '../modules/Logical.js'
-
-
+import {Branch} from '../modules/Branch.js'
+import { Conditional } from '../modules/Conditional.js'
 //flags for ARMv8-A
 const flag = {
     N: 0, Z: 0, C: 0, V: 0,
@@ -37,6 +37,8 @@ class CPU{
         this.entrySymbol= false;
         this.arithmetic = new Arithmetic(null);
         this.logical = new Logical(null);
+        this.branch = new Branch(null);
+        this.conditional = new Conditional(null);
     }
     run(){//initialization
         this.init();
@@ -47,19 +49,90 @@ class CPU{
                 //console.log(op);
                 this.specialRegisters.PC += 1;
                 //execute
+                /*-----------------Arithmetic Instructions---------------*/
                 if(op.opCode == c.ADD){
-                    console.log(this.registers)
+                    //console.log(this.registers)
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+<<<<<<< Updated upstream
                     console.log("value flag C: "+this.flag.C) 
                     let arg1 = this.registers[op.arg1]
                     this.registers[op.res] = arg1 + op.arg2;
                     // console.log(this.registers[op.res])
+=======
+                    //console.log(this.registers.toHex())
+                    //console.log("value flag C: "+this.flag.C)
+                }
+                if(op.opCode == c.CMP){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.MSUB){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.MUL){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.SDIV){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.SUB){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.UDIV){
+                    this.arithmetic.instruction = op;
+                    this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                /*-----------------Logical y Move Instructions-----------*/
+                if(op.opCode == c.ASR){
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if(op.opCode == c.LSL){
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if(op.opCode == c.LSR){
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+>>>>>>> Stashed changes
                 }
                 if(op.opCode == c.MOV){
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
+                if(op.opCode == c.ROR){
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                /*****************Branch Instructions***********************/
+                if(op.opCode == c.BEQ){
+                    this.branch.instruction = op;
+                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if(op.opCode == c.BNE){
+                    this.branch.instruction = op;
+                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if(op.opCode == c.BLE){
+                    this.branch.instruction = op;
+                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if(op.opCode == c.B){
+                    this.branch.instruction = op;
+                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                /*****************Conditional Instructions***********************/
+                if(op.opCode == c.CSEL){
+                    this.conditional.instruction = op;
+                    this.conditional.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                /*****************Addressing Modes***********************/
+                
             }
         }
 
