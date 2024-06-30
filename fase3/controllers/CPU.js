@@ -54,12 +54,12 @@ class CPU{
                     //console.log(this.registers)
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
-<<<<<<< Updated upstream
+
                     console.log("value flag C: "+this.flag.C) 
                     let arg1 = this.registers[op.arg1]
                     this.registers[op.res] = arg1 + op.arg2;
                     // console.log(this.registers[op.res])
-=======
+
                     //console.log(this.registers.toHex())
                     //console.log("value flag C: "+this.flag.C)
                 }
@@ -99,7 +99,7 @@ class CPU{
                 if(op.opCode == c.LSR){
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
->>>>>>> Stashed changes
+
                 }
                 if(op.opCode == c.MOV){
                     this.logical.instruction = op;
