@@ -2,12 +2,13 @@ import { parse, StartRules, SyntaxError } from './parser/parser.js'
 import { openFileDialog } from './views/openFile.js'
 import { quads, generateQuads } from './modules/quad.js'
 import { Registers, specialRegisters } from './modules/registers.js'
+import CPU from './controllers/CPU.js'
 import { Memory, Stack } from './modules/memory.js'
 
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
 const regs = new Registers(), specialRegs = new specialRegisters(), memory = new Memory(1024);
-
+const mv = new CPU();
 
 $(document).ready(function () {
     addTab();
@@ -455,3 +456,4 @@ btnReg.addEventListener('click', () => { showOutputTab(2) });
 
 const btnMem = document.getElementById('mem_tab');
 btnMem.addEventListener('click', () => { showOutputTab(3) });
+
