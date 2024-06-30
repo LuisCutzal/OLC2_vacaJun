@@ -1,7 +1,7 @@
 class Memory {
-    //default size is 64MB
-    constructor(size = 64 * 1024 * 1024){
-        this.memory = new Array(size).fill(0n)
+    //default 4MB memory size (4 * 1024 * 1024)
+    constructor(size = 4 * 1024 * 1024){
+        this.memory = new Uint8Array(size).fill(0)
     }
     get(address){
         if (address < 0 || address >= this.memory.length){
@@ -18,9 +18,22 @@ class Memory {
     dump(){
         return this.memory
     }
-    //optional: return value at address to hex value
-    toHex(){
-        return this.memory.map(value => value.toString(16).padStart(2, '0'))
+    //return value at address to hex value with blockSize (default 8)
+    toHex(blockSize = 8){
+        const result = [];
+        for (let i = 0; i < this.memory.length; i += blockSize) {
+            const block = this.memory.slice(i, i + blockSize);
+            const hex = Array.from(block).map(value => value.toString(16).padStart(2, '0')).join(' ')
+            const ascii = Array.from(block).map(value => (value >= 32 && value <= 126 ? String.fromCharCode(value) : '.')).join('')
+            // const binary = Array.from(block).map(value => value.toString(2).padStart(8, '0')).join(' ')
+            result.push({
+                address: '0x' + i.toString(16).padStart(8, '0'),
+                hex: hex,
+                ascii: ascii
+                // binary: binary
+            });
+        }
+        return result;
     }
 }
 
