@@ -47,15 +47,47 @@ class Arithmetic {
             console.log("CMN");
         }
         if (this.instruction.opCode === cons.CMP) { //comparacion entre 2 valores de registros
-            console.log(reg1)
-            /*let arg1 = parseInt(registers.getRegister(this.instruction.res))
-            let arg2 = parseInt(registers.getRegister(this.instruction.res))
-            if(arg1 === arg2){//cuando sean iguales entonces flag Z=1
-                console.log("funciona")
-            }else{//flag Z=0
-                console.log("no son iguales")
-            }*/
-
+            let reg1 = 0
+            let res = 0
+            let valR1 = 0
+            let valR2 = 0
+            if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.res) === cons.REG) {
+                reg1 = this.instruction.arg1
+                res = this.instruction.res
+                valR1 = registers.getRegister(reg1)
+                valR2 = registers.getRegister(res)
+                if (valR1 === valR2) {
+                    console.log("son iguales")
+                    //flag.Z = 0
+                } else {
+                    console.log("no lo son")
+                    //flag.Z = 1
+                }
+            }
+            if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.NUM) {
+                reg1 = this.instruction.arg1;
+                res = parseNum(this.instruction.arg2)
+                valR1 = parseInt(registers.getRegister(this.instruction.arg1))
+                if (valR1 === res) {
+                    console.log("son iguales")
+                    //flag.Z = 0
+                } else {
+                    console.log("no lo son")
+                    //flag.Z = 1
+                }
+            }
+            if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                reg1 = this.instruction.arg1;
+                res = parseNum(this.instruction.arg2)
+                valR1 = parseInt(registers.getRegister(this.instruction.arg1))
+                if (valR1 === res) {
+                    console.log("son iguales")
+                    //flag.Z = 0
+                } else {
+                    console.log("no lo son")
+                    //flag.Z = 1
+                }
+            }
         }
     }
 }
