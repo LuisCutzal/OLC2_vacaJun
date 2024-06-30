@@ -7,14 +7,11 @@ import { Memory, Stack } from './modules/memory.js'
 
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
-const regs = new Registers(), specialRegs = new specialRegisters(), memory = new Memory(1024);
 
 $(document).ready(function () {
     addTab();
     consoleResult = editor('console_log', '', true, true, false);
     btnConsole.click();
-    showRegisters();
-    showMemory();
 });
 
 //open file dialog
@@ -210,12 +207,13 @@ const analysis = async () => {
         let resultado = parse(text);
         generateCST(resultado.getDot(resultado));
         generateQuads(resultado);
-        console.log(quads)
+        addQuadsToTable();
         let cpu = new CPU();
         cpu.instructions = quads;
         cpu.run();
-        addQuadsToTable();
-
+        showRegisters(cpu.registers, cpu.specialRegisters);
+        showMemory(cpu.memory);
+       
 
 
 
@@ -392,7 +390,7 @@ function addQuadsToTable() {
     });
 }
 
-function showRegisters() {
+function showRegisters(regs, specialRegs) {
     const table = document.getElementById('registerBody');
 
     const registers = regs.toHex()
@@ -424,28 +422,33 @@ function showRegisters() {
 
 }
 
-function showMemory() {
+function showMemory(memory) {
     const table = document.getElementById('memoryBody');
     const mem = memory.toHex();
+    const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < mem.length; i++) {
-        const row = table.insertRow();
-        const cellAddress = row.insertCell(0);
-        const cellHexa = row.insertCell(1);
-        const cellAscii = row.insertCell(2);
+        const row = document.createElement('tr');
+        const cellAddress = document.createElement('td');
+        const cellHexa = document.createElement('td');
+        const cellAscii = document.createElement('td');
 
         cellAddress.style.backgroundColor = "var(--background-color-semi)";
         cellAddress.style.borderColor = "white";
         cellAscii.style.color = "yellow";
 
-
         cellAddress.textContent = mem[i].address;
         cellHexa.textContent = mem[i].hex;
         cellAscii.textContent = mem[i].ascii;
+
+        row.appendChild(cellAddress);
+        row.appendChild(cellHexa);
+        row.appendChild(cellAscii);
+
+        fragment.appendChild(row);
     }
 
-
-
+    table.appendChild(fragment);
 }
 
 const btnConsole = document.getElementById('console_tab');
