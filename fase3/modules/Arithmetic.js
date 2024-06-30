@@ -30,7 +30,7 @@ class Arithmetic {
                 value = parseInt(registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
             }
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                value = parseInt(this.instruction.arg1) + parseNum(this.instruction.arg2);
+                value = parseInt(registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
             }
             registers.setRegister(this.instruction.res, parseInt(value));
         }
