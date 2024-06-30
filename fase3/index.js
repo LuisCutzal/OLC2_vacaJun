@@ -1,6 +1,9 @@
 import { parse, StartRules, SyntaxError } from './parser/parser.js'
 import { openFileDialog } from './views/openFile.js'
 import { quads, generateQuads } from './modules/quad.js'
+import CPU from './controllers/CPU.js'
+
+const mv = new CPU();
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
 
@@ -295,7 +298,10 @@ function addErrorToTable(type, line, column, message) {
 const btnAnalysis = document.getElementById('run');
 btnAnalysis.addEventListener('click', () => {
     analysis();
-
+    mv.instructions = quads;
+    //mv.instructions = quads.map(quad => quad.opCode);
+    //console.log(mv.instructions)
+    mv.run();//ver cpu
     let codeMirrors = document.querySelectorAll('.CodeMirror');
 
     // obtener el console log y añadirle animación cada que muestre un resultado
