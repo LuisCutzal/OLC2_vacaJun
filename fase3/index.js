@@ -154,12 +154,15 @@ function showOutputTab(id) {
 }
 
 function toggleVisibility(id) {
-    let element = document.getElementById(id);
-    if (element.style.display === 'none') {
-        element.style.display = 'flex';
-    } else {
-        element.style.display = 'none';
+    let element = document.getElementsByClassName(id);
+    for (const f of element) {
+        if (f.style.opacity == 0) {
+            f.style.opacity = 1;
+        } else {
+            f.style.opacity = 0;
+        }
     }
+
 }
 
 function editor(id, language, lineNumbers = true, readOnly = false, styleActiveLine = true) {
@@ -538,4 +541,4 @@ const btnStack = document.getElementById('stack_tab');
 btnStack.addEventListener('click', () => { showOutputTab(4) });
 
 const btnFlag = document.getElementById('flags_tab');
-btnFlag.addEventListener('click', () => { toggleVisibility('flagsContainer') });
+btnFlag.addEventListener('click', () => { toggleVisibility('flag') });
