@@ -1,13 +1,20 @@
 import { parse, StartRules, SyntaxError } from './parser/parser.js'
 import { openFileDialog } from './views/openFile.js'
 import { quads, generateQuads } from './modules/quad.js'
+import { Registers, specialRegisters } from './modules/registers.js'
+import { initMemory, getMemory, setMemory } from './modules/memory.js'
+
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
+const regs = new Registers(), specialRegs = new specialRegisters();
+
 
 $(document).ready(function () {
     addTab();
     consoleResult = editor('console_log', '', true, true, false);
     btnConsole.click();
+    showRegisters();
+    showMemory();
 });
 
 //open file dialog
@@ -207,6 +214,7 @@ const analysis = async () => {
 
 
 
+
         /*if (resultado.errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             resultado.errors.forEach(error => {
@@ -378,6 +386,43 @@ function addQuadsToTable() {
         cellRes.textContent = q.getResult();
 
     });
+}
+
+function showRegisters() {
+    const table = document.getElementById('registerBody');
+
+    const registers = regs.toHex()
+
+
+    for (const [key, value] of Object.entries(registers)) {
+        for (let i = 0; i < value.length; i++) {
+            const row = table.insertRow();
+            const cellReg = row.insertCell(0);
+            const cellVal = row.insertCell(1);
+
+            cellReg.textContent = key + i;
+            cellVal.textContent = value[i];
+        }
+    }
+
+
+    const specials = specialRegs.toHex();
+
+    for (const [key, value] of Object.entries(specials)) {
+        const row = table.insertRow();
+        const cellReg = row.insertCell(0);
+        const cellVal = row.insertCell(1);
+
+        cellReg.textContent = key;
+        cellVal.textContent = value;
+
+    }
+
+}
+
+function showMemory() {
+    initMemory()
+    console.log(getMemory());
 }
 
 const btnConsole = document.getElementById('console_tab');

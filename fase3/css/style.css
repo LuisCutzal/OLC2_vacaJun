@@ -130,7 +130,7 @@ nav {
     width: 10%;
     height: 100%;
     flex-shrink: 0;
-    background-image: url('./images/logo-ecys-fiusac-min.png');
+    background-image: url('../images/logo-ecys-fiusac-min.png');
     background-repeat: no-repeat;
     background-size: cover;
 }

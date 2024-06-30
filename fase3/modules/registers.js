@@ -30,10 +30,10 @@ class Registers {
         }
     }
     //Optional: Method to get hex respresentation all of registers
-    toHex(){
+    toHex() {
         const hexRegisters = {}
-        for (const [key, regArray] of Object.entries(this.rgisters)){
-            hexRegisters[key] = regArray.map(value =>(typeof value === 'bigint' ? '0x' + value.toString(16) : value.toString(16)))
+        for (const [key, regArray] of Object.entries(this.registers)) {
+            hexRegisters[key] = regArray.map(value => (typeof value === 'bigint' ? '0x' + value.toString(16) : value.toString(16)))
         }
         return hexRegisters
     }
@@ -44,41 +44,41 @@ class specialRegisters {
         this.SP = 0n // Stack Pointer
         this.PC = 0n // Program Counter
     }
-    
-    getSP(){
+
+    getSP() {
         return this.SP
     }
 
-    setSP(value){
+    setSP(value) {
         this.SP = BigInt(value)
     }
 
-    getPC(){
+    getPC() {
         return this.PC
     }
 
-    setPC(value){
+    setPC(value) {
         this.PC = BigInt(value)
     }
 
-    incrementPC(offest){
+    incrementPC(offest) {
         this.PC += BigInt(offest)
     }
 
-    decrementPC(offest){
+    decrementPC(offest) {
         this.PC -= BigInt(offest)
     }
 
-    decrementSP(offest){
+    decrementSP(offest) {
         this.SP -= BigInt(offest)
     }
 
-    incrementSP(offest){
+    incrementSP(offest) {
         this.SP += BigInt(offest)
     }
 
     //Optional: Method to get hex respresentation all of special registers
-    toHex(){
+    toHex() {
         return {
             SP: this.SP.toString(16),
             PC: this.PC.toString(16)
@@ -86,4 +86,4 @@ class specialRegisters {
     }
 }
 
-export {Registers, specialRegisters}  // Export the class Registers and specialRegisters
+export { Registers, specialRegisters }  // Export the class Registers and specialRegisters

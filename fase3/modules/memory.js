@@ -21,6 +21,6 @@ function setMemory(address, value) {
     memory[address] = value
 }
 
-export default {initMemory, getMemory, setMemory}
+export { initMemory, getMemory, setMemory }
 
 
