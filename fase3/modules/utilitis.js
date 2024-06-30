@@ -17,4 +17,11 @@ function typeOfArg(arg){
     return ERRORTYPE;
 }
 
-export {typeOfArg}
+function parseNum(num){
+    if(num[0] === '#'){
+        return parseInt(num.slice(1));
+    }
+    return parseInt(num);
+}
+
+export {typeOfArg, parseNum}
