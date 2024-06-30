@@ -54,14 +54,6 @@ class CPU{
                     //console.log(this.registers)
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
-
-                    console.log("value flag C: "+this.flag.C) 
-                    let arg1 = this.registers[op.arg1]
-                    this.registers[op.res] = arg1 + op.arg2;
-                    // console.log(this.registers[op.res])
-
-                    //console.log(this.registers.toHex())
-                    //console.log("value flag C: "+this.flag.C)
                 }
                 if(op.opCode == c.CMP){
                     this.arithmetic.instruction = op;
