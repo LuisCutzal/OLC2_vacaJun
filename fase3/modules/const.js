@@ -258,6 +258,8 @@ export const ZR = 114
 export const PC = 115
 export const W = 116
 export const WZR = 117
-
-
+//-------------------
+export const D_NUM = 118 //#numero
+export const NUM = 119 //numero
+export const REG = 120 //registro
 
