@@ -6,7 +6,7 @@ import { Memory, Stack } from './modules/memory.js'
 
 
 let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
-const regs = new Registers(), specialRegs = new specialRegisters(), memory = new Memory();
+const regs = new Registers(), specialRegs = new specialRegisters(), memory = new Memory(1024);
 
 
 $(document).ready(function () {
@@ -421,7 +421,27 @@ function showRegisters() {
 }
 
 function showMemory() {
+    const table = document.getElementById('memoryBody');
     const mem = memory.toHex();
+
+    for (let i = 0; i < mem.length; i++) {
+        const row = table.insertRow();
+        const cellAddress = row.insertCell(0);
+        const cellHexa = row.insertCell(1);
+        const cellAscii = row.insertCell(2);
+
+        cellAddress.style.backgroundColor = "var(--background-color-semi)";
+        cellAddress.style.borderColor = "white";
+        cellAscii.style.color = "yellow";
+
+
+        cellAddress.textContent = mem[i].address;
+        cellHexa.textContent = mem[i].hex;
+        cellAscii.textContent = mem[i].ascii;
+    }
+
+
+
 }
 
 const btnConsole = document.getElementById('console_tab');
