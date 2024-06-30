@@ -259,7 +259,8 @@ export const PC = 115
 export const W = 116
 export const WZR = 117
 //-------------------
-export const D_NUM = 118 //#numero
-export const NUM = 119 //numero
+export const D_NUM = 118 //numero
+export const NUM = 119 //#numero
 export const REG = 120 //registro
-
+export const ISLABEL = 121 //es esto -> LABEL:
+export const ERRORTYPE = 122 
