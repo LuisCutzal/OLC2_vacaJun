@@ -121,21 +121,44 @@ function showOutputTab(id) {
         document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
         document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
         document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+        document.getElementById('stack').style.display = 'none'; // ocultar la tabla de stack
+
     } else if (id == 1) {
         codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
         document.getElementById('quadruples').style.display = 'block'; // mostrar la tabla de cuadruplos
         document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
         document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+        document.getElementById('stack').style.display = 'none'; // ocultar la tabla de stack
+
     } else if (id == 2) {
         codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
         document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
         document.getElementById('registers').style.display = 'block'; // mostrar la tabla de registros
         document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
-    } else {
+        document.getElementById('stack').style.display = 'none'; // ocultar la tabla de stack
+    } else if (id == 3) {
         codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
         document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
         document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
         document.getElementById('memory').style.display = 'block'; // mostrar la tabla de memoria
+        document.getElementById('stack').style.display = 'none'; // ocultar la tabla de stack
+
+    } else if (id == 4) {
+        codeMirrors[codeMirrors.length - 1].style.display = 'none'; // ocultar la consola de salida
+        document.getElementById('quadruples').style.display = 'none'; // ocultar la tabla de cuadruplos
+        document.getElementById('registers').style.display = 'none'; // ocultar la tabla de registros
+        document.getElementById('memory').style.display = 'none'; // ocultar la tabla de memoria
+        document.getElementById('stack').style.display = 'block'; // mostrar la tabla de stack
+
+    }
+}
+
+function toggleVisibility(id) {
+    let element = document.getElementById(id);
+    if (element.style.display === 'none') {
+        element.style.display = 'flex';
+    } else {
+        element.style.display = 'none';
     }
 }
 
@@ -213,7 +236,7 @@ const analysis = async () => {
         let cpu = new CPU();
         cpu.instructions = quads;
         cpu.run();
-        showRegisters(cpu.registers, cpu.specialRegisters);
+        showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
         showMemory(cpu.memory);
 
 
@@ -356,9 +379,6 @@ function generateCST(DOTstring) {
     var network = new vis.Network(container, data, options);
 };
 
-
-
-
 function cleanQuadsTable() {
     const table = document.getElementById('quadsTable');
     while (table.rows.length > 1) {
@@ -418,6 +438,14 @@ function createRegisters() {
 
     }
 
+    const flagN = document.getElementById('N');
+    flagN.textContent = "N:" + cpu.flag.N;
+    const flagZ = document.getElementById('Z');
+    flagZ.textContent = "Z:" + cpu.flag.Z;
+    const flagC = document.getElementById('C');
+    flagC.textContent = "C:" + cpu.flag.C;
+    const flagV = document.getElementById('V');
+    flagV.textContent = "V:" + cpu.flag.V;
 }
 
 function createMemory() {
@@ -450,7 +478,7 @@ function createMemory() {
     table.appendChild(fragment);
 }
 
-function showRegisters(regs, specialRegs) {
+function showRegisters(regs, specialRegs, flag) {
     const table = document.getElementById('registerBody');
     const rows = table.rows;
     let cont = 0;
@@ -469,6 +497,15 @@ function showRegisters(regs, specialRegs) {
         cont++;
     }
 
+
+    const flagN = document.getElementById('N');
+    flagN.textContent = "N:" + flag.N;
+    const flagZ = document.getElementById('Z');
+    flagZ.textContent = "Z:" + flag.Z;
+    const flagC = document.getElementById('C');
+    flagC.textContent = "C:" + flag.C;
+    const flagV = document.getElementById('V');
+    flagV.textContent = "V:" + flag.V;
 }
 
 function showMemory(memory) {
@@ -497,3 +534,8 @@ btnReg.addEventListener('click', () => { showOutputTab(2) });
 const btnMem = document.getElementById('mem_tab');
 btnMem.addEventListener('click', () => { showOutputTab(3) });
 
+const btnStack = document.getElementById('stack_tab');
+btnStack.addEventListener('click', () => { showOutputTab(4) });
+
+const btnFlag = document.getElementById('flags_tab');
+btnFlag.addEventListener('click', () => { toggleVisibility('flagsContainer') });

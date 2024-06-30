@@ -308,6 +308,7 @@ td:hover {
 
 
 
+
 /*----------------------------------------------------------------------------------
                                     BUTTON
   ----------------------------------------------------------------------------------*/
@@ -388,6 +389,22 @@ td:hover {
 .invisible-button {
     opacity: 0;
 }
+
+
+#flagsContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+}
+
+.flag {
+    padding: 1px;
+    border: 1px solid;
+    border-color: #FFFFFF;
+}
+
 
 
 @keyframes rainbow {

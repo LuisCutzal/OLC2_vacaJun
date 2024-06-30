@@ -115,12 +115,6 @@ export function generateQuads(result) {
                     // Verificar si el label corresponde a una etiqueta de salto y asignarla al resultado
                     if (element.value === 'LABEL') quads[quads.length - 1].setResult(element.children[0].value);
                     break;
-                /*case "DIRECTIVE":
-                    console.log(quads)
-                    quads[quads.length - 1].setOperator(element.value);
-                    quads[quads.length - 1].setArg1(element.children[0].value);
-                    break;*/
-
             }
 
             generateQuads(element); // llamada recursiva para ir a evaluar todos los hijos del nodo actual
