@@ -1017,22 +1017,30 @@ ldr_inst "Instrucción LDR"
         {
             const node = createNode('INSTRUCTION', 'LDR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
     / _* "LDR"i _* rd:reg32 _* "," _* src:ldr_source _* comment? "\n"?
         {
             const node = createNode('INSTRUCTION', 'LDR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
 ldr_source 
@@ -1072,22 +1080,30 @@ ldrb_inst "Instrucción LDRB"
         {
             const node = createNode('INSTRUCTION', 'LDRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
     / _* "LDRB"i _* rd:reg32 _* "," _* src:ldr_source _* comment? "\n"?
         {
             const node = createNode('INSTRUCTION', 'LDRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
 
@@ -1128,22 +1144,30 @@ str_inst "Instrucción STR"
         {
             const node = createNode('INSTRUCTION', 'STR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
     / _* "STR"i _* rd:reg32 _* "," _* src:str_source _* comment? "\n"?
         {
             const node = createNode('INSTRUCTION', 'STR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
 str_source 
@@ -1178,22 +1202,30 @@ strb_inst "Instrucción STRB"
         {
             const node = createNode('INSTRUCTION', 'STRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
     / _* "STRB"i _* rd:reg32 _* "," _* src:str_source _* comment? "\n"?
         {
             const node = createNode('INSTRUCTION', 'STRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+           let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         }
 

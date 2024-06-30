@@ -1246,21 +1246,29 @@ function peg$parse(input, options) {
   var peg$f78 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'LDR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f79 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'LDR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f80 = function(l) {
@@ -1288,21 +1296,29 @@ function peg$parse(input, options) {
   var peg$f87 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'LDRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f88 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'LDRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f89 = function(rd, rd2, src) {
@@ -1334,21 +1350,29 @@ function peg$parse(input, options) {
   var peg$f91 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'STR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f92 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'STR');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f93 = function(r, r2, s, i2) {
@@ -1372,21 +1396,29 @@ function peg$parse(input, options) {
   var peg$f99 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'STRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+            let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f100 = function(rd, src) {
             const node = createNode('INSTRUCTION', 'STRB');
             const rdNode = createNode('DESTINATION', 'RD');
-            const srcNode = createNode('SOURCE1', 'SRC1');
+           let cont = 1
+            src.forEach(element => {
+                const srcNode = createNode('SOURCE' + cont, 'SRC' + cont);
+                addChild(srcNode, element);
+                addChild(node, srcNode);
+                cont++;
+            });
             addChild(rdNode, rd);
-            addChildren(srcNode, src);
             addChild(node, rdNode);
-            addChild(node, srcNode);
             return node;
         };
   var peg$f101 = function(rd, rd2, src) {
