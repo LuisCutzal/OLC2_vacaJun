@@ -59,11 +59,11 @@ class CPU{
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if(op.opCode == c.MSUB){
+                if(op.opCode == c.MSUB){//multiplicacion y substraccion
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if(op.opCode == c.MUL){
+                if(op.opCode == c.MUL){//multiplicacion
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }

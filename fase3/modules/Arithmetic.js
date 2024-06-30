@@ -89,6 +89,26 @@ class Arithmetic {
                 }
             }
         }
+        if(this.instruction.opCode === cons.MSUB){
+            let valMul = 0;
+            let value = 0;
+            if(typeOfArg(this.instruction.arg1) != cons.REG || typeOfArg(this.instruction.arg2) != cons.REG || typeOfArg(this.instruction.arg3) != cons.REG || typeOfArg(this.instruction.res) != cons.REG){
+                console.log("Invalid instruction"); //error sintactico
+                return;
+            }
+            valMul = parseInt(registers.getRegister(this.instruction.arg2)) * parseInt(registers.getRegister(this.instruction.arg3));
+            value = parseInt(registers.getRegister(this.instruction.arg1)) - valMul;
+            registers.setRegister(this.instruction.res, parseInt(value));
+        }
+        if(this.instruction.opCode === cons.MUL){
+            let value = 0;
+            if(typeOfArg(this.instruction.arg1) != cons.REG || typeOfArg(this.instruction.arg2) != cons.REG || typeOfArg(this.instruction.res) != cons.REG){
+                console.log("Invalid instruction"); //error sintactico
+                return;
+            }
+            value = parseInt(registers.getRegister(this.instruction.arg1)) * parseInt(registers.getRegister(this.instruction.arg2));
+            registers.setRegister(this.instruction.res, parseInt(value));
+        }
     }
 }
 
