@@ -139,11 +139,23 @@ class Arithmetic {
         }
         if (this.instruction.opCode === cons.MUL) {
             let value = 0;
-            if (typeOfArg(this.instruction.arg1) != cons.REG || typeOfArg(this.instruction.arg2) != cons.REG || typeOfArg(this.instruction.res) != cons.REG) {
+            let reg1=0;
+            let reg2=0;
+            /*if (typeOfArg(this.instruction.res) != cons.REG) {
                 console.log("Invalid instruction"); //error sintactico
                 return;
+            }*/
+            if(typeOfArg(this.instruction.arg1) != cons.REG){
+                reg1 = this.instruction.arg1
+            }else{
+                reg1 = parseInt(registers.getRegister(this.instruction.arg1))
             }
-            value = parseInt(registers.getRegister(this.instruction.arg1)) * parseInt(registers.getRegister(this.instruction.arg2));
+            if(typeOfArg(this.instruction.arg2) != cons.REG){
+                reg2 = this.instruction.arg2
+            }else{
+                reg2 = parseInt(registers.getRegister(this.instruction.arg2))
+            }
+            value = reg1 * reg2;
             if (value == 0) {
                 flag.Z = 1
             }
@@ -176,12 +188,19 @@ class Arithmetic {
         }
         if (this.instruction.opCode === cons.SUB) {
             let value = 0;
-            if (typeOfArg(this.instruction.arg1) != cons.REG || typeOfArg(this.instruction.arg2) != cons.REG) {
-                console.log("Invalid instruction");
-                return;
+            let reg1 = 0;
+            let reg2 = 0;
+
+            if(typeOfArg(this.instruction.arg1) != cons.REG){
+                reg1 = this.instruction.arg1
+            }else{
+                reg1 = parseInt(registers.getRegister(this.instruction.arg1));
             }
-            let reg1 = parseInt(registers.getRegister(this.instruction.arg1));
-            let reg2 = parseInt(registers.getRegister(this.instruction.arg2));
+            if(typeOfArg(this.instruction.arg2) != cons.REG){
+                reg2 = this.instruction.arg2
+            }else{
+                reg2 = parseInt(registers.getRegister(this.instruction.arg2));
+            }
             value = reg1 - reg2;
             if (value == 0) {
                 flag.Z = 1;
@@ -226,7 +245,6 @@ class Arithmetic {
                 flag.Z = 1
             }
             registers.setRegister(this.instruction.res, parseInt(value));
-
         }
     }
 }
