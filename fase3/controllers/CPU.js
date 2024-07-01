@@ -67,15 +67,15 @@ class CPU {
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if (op.opCode == c.SDIV) {
+                if (op.opCode == c.SDIV) {//division SI tomando en cuenta los signos
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if (op.opCode == c.SUB) {
+                if (op.opCode == c.SUB) {//resta
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if (op.opCode == c.UDIV) {
+                if (op.opCode == c.UDIV) {//division NO toma en cuenta los signos
                     this.arithmetic.instruction = op;
                     this.arithmetic.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
