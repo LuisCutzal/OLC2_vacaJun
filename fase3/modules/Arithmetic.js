@@ -58,10 +58,10 @@ class Arithmetic {
                 valR2 = registers.getRegister(res)
                 if (valR1 === valR2) {
                     console.log("son iguales")
-                    //flag.Z = 0
+                    flag.Z = 0;
                 } else {
                     console.log("no lo son")
-                    //flag.Z = 1
+                    flag.Z = 1;
                 }
             }
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.NUM) {
@@ -69,11 +69,9 @@ class Arithmetic {
                 res = parseNum(this.instruction.arg2)
                 valR1 = parseInt(registers.getRegister(this.instruction.arg1))
                 if (valR1 === res) {
-                    console.log("son iguales")
-                    //flag.Z = 0
+                    flag.Z = 0
                 } else {
-                    console.log("no lo son")
-                    //flag.Z = 1
+                    flag.Z = 1
                 }
             }
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.D_NUM) {
@@ -81,11 +79,9 @@ class Arithmetic {
                 res = parseNum(this.instruction.arg2)
                 valR1 = parseInt(registers.getRegister(this.instruction.arg1))
                 if (valR1 === res) {
-                    console.log("son iguales")
-                    //flag.Z = 0
+                    flag.Z = 0
                 } else {
-                    console.log("no lo son")
-                    //flag.Z = 1
+                    flag.Z = 1
                 }
             }
         }
