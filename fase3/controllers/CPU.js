@@ -5,6 +5,7 @@ import { Arithmetic } from '../modules/Arithmetic.js'
 import { Logical } from '../modules/Logical.js'
 import { Branch } from '../modules/Branch.js'
 import { Conditional } from '../modules/Conditional.js'
+import {SymbolTable} from '../modules/SymbolTable.js'
 //flags for ARMv8-A
 const flag = {
     N: 0, Z: 0, C: 0, V: 0,
