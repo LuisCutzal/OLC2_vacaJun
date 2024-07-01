@@ -90,8 +90,8 @@ class Arithmetic {
                 console.log("Invalid instruction"); //error sintactico
                 return;
             }
-            valMul = parseInt(registers.getRegister(this.instruction.arg2)) * parseInt(registers.getRegister(this.instruction.arg3));
-            value = parseInt(registers.getRegister(this.instruction.arg1)) - valMul;
+            valMul = parseInt(registers.getRegister(this.instruction.arg1)) * parseInt(registers.getRegister(this.instruction.arg2));
+            value = parseInt(registers.getRegister(this.instruction.arg3)) - valMul;
             registers.setRegister(this.instruction.res, parseInt(value));
         }
         if(this.instruction.opCode === cons.MUL){
