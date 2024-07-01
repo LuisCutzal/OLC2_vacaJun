@@ -360,7 +360,6 @@ function generateCST(DOTstring) {
         nodes: parsedData.nodes,
         edges: parsedData.edges
     }
-    console.log(data);
     var options = {
         nodes: {
             widthConstraint: 100,

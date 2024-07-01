@@ -14943,7 +14943,6 @@ function peg$parse(input, options) {
             addNodes(node);
             dot += '}';
             console.clear();
-            console.log(dot);
             return dot;
         }
     }
@@ -14989,7 +14988,6 @@ function peg$parse(input, options) {
         addNodes(node);
         dot += '}';
         console.clear();
-        console.log(dot);
         return dot;
     }
     const root = createNode('START', 'START');
