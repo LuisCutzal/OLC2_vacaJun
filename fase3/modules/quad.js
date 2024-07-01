@@ -97,10 +97,17 @@ export function generateQuads(result) {
 
                     break;
                 case "DIRECTIVE":
-                    if (element.children.length > 0 && quads.length > 0) {
-                        quads[quads.length - 1].setOperator(element.children[0].value);
-                        quads[quads.length - 1].setArg1(element.children[1].value);
+                    if (element.children.length > 0) {
+
+
+                        if (quads.length > 0 && quads[quads.length - 1].getOperator() === 'Section') { // reconoce una variable 
+                            quads[quads.length - 1].setOperator(element.children[0].value);
+                            quads[quads.length - 1].setArg1(element.children[1].value);
+                        }
                     }
+
+
+
                     break;
 
                 case "DESTINATION": // Asignar el valor del resultado del cuadruplo
