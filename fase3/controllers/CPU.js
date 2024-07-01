@@ -5,6 +5,8 @@ import { Arithmetic } from '../modules/Arithmetic.js'
 import { Logical } from '../modules/Logical.js'
 import { Branch } from '../modules/Branch.js'
 import { Conditional } from '../modules/Conditional.js'
+import {SymbolTable} from '../modules/SymbolTable.js'
+
 //flags for ARMv8-A
 const flag = {
     N: 0, Z: 0, C: 0, V: 0,
@@ -19,6 +21,7 @@ class CPU {
         this.specialRegisters = new specialRegisters();
         this.memory = new Memory(32 * 1024);
         this.stack = new Stack();
+        this.symbolTable = new SymbolTable();
         this.instructions = [];
         this.specialRegisters.PC = 0;
         this.debug = false;
@@ -33,6 +36,7 @@ class CPU {
         this.memory = new Memory(32 * 1024);
         this.specialRegisters.PC = 0;
         this.flag.init();
+        this.symbolTable = new SymbolTable();
         this.output = "";
         this.entrySymbol = false;
         this.arithmetic = new Arithmetic(null);

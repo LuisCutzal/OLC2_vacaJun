@@ -15,3 +15,5 @@ class SymbolTable{
         return this.table[symbol]
     }
 }
+
+export { SymbolTable }
