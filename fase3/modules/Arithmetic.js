@@ -57,10 +57,8 @@ class Arithmetic {
                 valR1 = registers.getRegister(reg1)
                 valR2 = registers.getRegister(res)
                 if (valR1 === valR2) {
-                    console.log("son iguales")
                     flag.Z = 0;
                 } else {
-                    console.log("no lo son")
                     flag.Z = 1;
                 }
             }
