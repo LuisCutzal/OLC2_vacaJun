@@ -6,6 +6,7 @@ import { Logical } from '../modules/Logical.js'
 import { Branch } from '../modules/Branch.js'
 import { Conditional } from '../modules/Conditional.js'
 import {SymbolTable} from '../modules/SymbolTable.js'
+import {DataAndDeclaration} from '../modules/DataAndDeclaration.js'
 
 //flags for ARMv8-A
 const flag = {
@@ -47,6 +48,11 @@ class CPU {
     run() {//initialization
         this.init();
         let lenInstructions = this.instructions.length;
+        //label and const data in memory processing in memory
+        let dataAndDeclaration = new DataAndDeclaration(this.instructions, this.specialRegisters);
+        dataAndDeclaration.run(this.memory, this.symbolTable);
+        
+
         if (lenInstructions != 0) {
             while (this.specialRegisters.PC < lenInstructions) {
                 let op = this.instructions[this.specialRegisters.PC]
