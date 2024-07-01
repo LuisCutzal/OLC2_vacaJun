@@ -80,6 +80,7 @@ export function generateQuads(result) {
             switch (element.type) {
                 case "INSTRUCTION": // crear un nuevo cuadruplo por cada instrucción
                 case "SECTION": // crear un nuevo cuadruplo por cada sección
+
                     let quad = new Quadruple();
                     quad.setOperator(element.value);
                     quad.setOpCode(createCode(element.value));
@@ -93,21 +94,26 @@ export function generateQuads(result) {
                             quads[quads.length - 1].setResult(element.children[0].value);
                             break;
 
+
                     }
 
                     break;
+
                 case "DIRECTIVE":
-                    if (element.children.length > 0) {
-
-
-                        if (quads.length > 0 && quads[quads.length - 1].getOperator() === 'Section') { // reconoce una variable 
-                            quads[quads.length - 1].setOperator(element.children[0].value);
-                            quads[quads.length - 1].setArg1(element.children[1].value);
-                        }
+                    if (element.children.length === 1) {
+                        let quad = new Quadruple();
+                        quad.setOperator(element.value);
+                        quad.setOpCode(createCode(element.value));
+                        quads.push(quad);
+                        quads[quads.length - 1].setResult(element.children[0].value);
+                    } else if (element.children.length === 2) {
+                        let quad = new Quadruple();
+                        quad.setOperator(element.value);
+                        quad.setOpCode(createCode(element.value));
+                        quads.push(quad);
+                        quads[quads.length - 1].setResult(element.children[0].value);
+                        quads[quads.length - 1].setArg1(element.children[1].value);
                     }
-
-
-
                     break;
 
                 case "DESTINATION": // Asignar el valor del resultado del cuadruplo
@@ -129,6 +135,11 @@ export function generateQuads(result) {
                     // Verificar si el label corresponde a una etiqueta de salto y asignarla al resultado
                     if (element.value === 'LABEL') quads[quads.length - 1].setResult(element.children[0].value);
                     break;
+                case "STRING":
+                case "INTEGER":
+                    quads[quads.length - 1].setArg1(element.value);
+                    break;
+
 
             }
 
