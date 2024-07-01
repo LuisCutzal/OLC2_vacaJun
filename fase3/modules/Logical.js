@@ -1,5 +1,5 @@
 import *  as cons from './const.js';
-import { binaryToSignedDecimal, decimalToSignedBinary, parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
+import { decimalToUnsignedBinary, binaryToSignedDecimal, decimalToSignedBinary, parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
 
 class Logical {
     constructor(instruction) {
@@ -91,7 +91,7 @@ class Logical {
 
                 // El corrimiento aritmético  a la derecha es equivalente al valor del registro dividido por (2 ** corrimiento)
                 value = Math.round(arg1 / (2 ** arg2));
-                value = decimalToSignedBinary(value, 32);
+                //value = decimalToSignedBinary(value, 32);
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -110,12 +110,13 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = decimalToSignedBinary(arg1, 32); // obtengo el número en binario 
+                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de derecha a izquierda
                 let fillingVals = new Array(arg2).fill('0');
 
                 value = [...value.slice(arg2), ...fillingVals.join('')].join('');
+                value = binaryToSignedDecimal(value);
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -134,13 +135,13 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = decimalToSignedBinary(arg1, 32); // obtengo el número en binario 
+                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de  izquierda a derecha 
                 let fillingVals = new Array(arg2).fill('0');
 
                 value = [...fillingVals.join(''), ...value.slice(0, value.length - arg2)].join('');
-
+                value = binaryToSignedDecimal(value);
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -148,6 +149,27 @@ class Logical {
             return;
         }
 
+        if (this.instruction.opCode === cons.ROR) {
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                }
+
+                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
+                //aplicar corrimiento circular 
+                value = [...value.slice(value.length - arg2), ...value.slice(0, value.length - arg2)].join('');
+                value = binaryToSignedDecimal(value);
+            }
+
+            registers.setRegister(this.instruction.res, value);
+
+            return;
+        }
 
     }
 }

@@ -64,4 +64,16 @@ function decimalToSignedBinary(decimal, bitLength) {
     return signedBinary;
 }
 
-export { typeOfArg, parseNum, parseBinaryNum, binaryToSignedDecimal, decimalToSignedBinary }
+function decimalToUnsignedBinary(decimal, bitLength) {
+    let absoluteBinary = Math.abs(decimal).toString(2);
+    let unsignedBinary;
+
+
+    unsignedBinary = absoluteBinary.padStart(bitLength, '0');
+
+
+    return unsignedBinary;
+}
+
+
+export { typeOfArg, parseNum, parseBinaryNum, binaryToSignedDecimal, decimalToSignedBinary, decimalToUnsignedBinary }
