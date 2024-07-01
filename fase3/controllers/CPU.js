@@ -84,6 +84,14 @@ class CPU {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
+
+                if (op.opCode == c.ANDS) {
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+
+
+
                 if (op.opCode == c.ASR) {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);

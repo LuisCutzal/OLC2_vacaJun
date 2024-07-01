@@ -1,5 +1,5 @@
 import *  as cons from './const.js';
-import { parseNum, typeOfArg } from './utilitis.js';
+import { parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
 
 class Logical {
     constructor(instruction) {
@@ -33,11 +33,43 @@ class Logical {
             if (typeOfArg(this.instruction.arg1) === cons.REG &&
                 (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM)) {
                 arg1 = registers.getRegister(this.instruction.arg1);
-                arg2 = this.instruction.arg2;
+                arg2 = parseBinaryNum(this.instruction.arg2);
                 value = arg1.toString(2) & arg2.toString(2);
             }
 
             registers.setRegister(this.instruction.res, value);
+
+            return;
+
+        }
+
+        if (this.instruction.opCode === cons.ANDS) {
+
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG &&
+                (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM)) {
+                arg1 = registers.getRegister(this.instruction.arg1);
+                arg2 = parseBinaryNum(this.instruction.arg2);
+                value = arg1.toString(2) & arg2.toString(2);
+
+                console.log(this.instruction.res.substring(1));
+
+                if (this.instruction.res.substring(1) != 15) {
+                    if (value < 0) {
+                        flag.N = 1;
+                    } else if (value == 0) {
+                        flag.Z = 1;
+                    }
+
+                    if (arg2 > arg1) {
+                        flag.C = 1;
+                    }
+                }
+            }
+
+            registers.setRegister(this.instruction.res, value);
+
+            return;
 
         }
 
