@@ -1,8 +1,8 @@
 class Memory {
-    //default 4MB memory size (4 * 1024 * 1024)
+    //default memory size 16KB (16 * 1024 bytes)
     constructor(size =16 * 1024) {
         this.memory = new Uint8Array(size).fill(0)
-        this.dataView = new DataView(this.memory)
+        this.dataView = new DataView(this.memory.buffer)
         this.ocuppied = []
     }
     //allocate memory for a given size

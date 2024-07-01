@@ -1,5 +1,5 @@
 import *  as cons from './const.js';
-import { parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
+import { binaryToSignedDecimal, decimalToSignedBinary, parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
 
 class Logical {
     constructor(instruction) {
