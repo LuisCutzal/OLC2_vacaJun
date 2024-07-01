@@ -31,4 +31,37 @@ function parseBinaryNum(num) {
     return num;
 }
 
-export { typeOfArg, parseNum, parseBinaryNum }
+
+function binaryToSignedDecimal(binary) {
+    if (binary[0] === '0') {
+        // Positivo, se retorna el valor convertido
+        return parseInt(binary, 2);
+
+    } else {
+        // Negativo, calcular el complemento a 1
+        let complement = binary.split('').map(bit => (bit === '0' ? '1' : '0')).join('');
+        let decimalValue = parseInt(complement, 2);
+        return -decimalValue;
+    }
+}
+
+
+function decimalToSignedBinary(decimal, bitLength) {
+    let absoluteBinary = Math.abs(decimal).toString(2);
+    let signedBinary;
+
+    if (decimal >= 0) {
+        // Es positivo, rellenar al inicio con 0's para completar los bits de longitud del registro
+        signedBinary = absoluteBinary.padStart(bitLength, '0');
+    } else {
+        // Es negativo, calcular el complemento 
+        let complement = absoluteBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+        // rellenar con 1's al inicio para completar los bits de longitu del registro
+        let filledComplement = complement.padStart(bitLength, '1');
+        signedBinary = filledComplement;
+    }
+
+    return signedBinary;
+}
+
+export { typeOfArg, parseNum, parseBinaryNum, binaryToSignedDecimal, decimalToSignedBinary }

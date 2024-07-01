@@ -5,7 +5,7 @@ import { Arithmetic } from '../modules/Arithmetic.js'
 import { Logical } from '../modules/Logical.js'
 import { Branch } from '../modules/Branch.js'
 import { Conditional } from '../modules/Conditional.js'
-import {SymbolTable} from '../modules/SymbolTable.js'
+import { SymbolTable } from '../modules/SymbolTable.js'
 
 //flags for ARMv8-A
 const flag = {
@@ -93,7 +93,6 @@ class CPU {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
-
 
 
                 if (op.opCode == c.ASR) {
