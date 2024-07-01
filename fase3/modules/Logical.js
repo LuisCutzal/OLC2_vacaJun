@@ -1,31 +1,48 @@
 import *  as cons from './const.js';
-import  {parseNum, typeOfArg } from './utilitis.js';
+import { parseNum, typeOfArg } from './utilitis.js';
 
-class Logical{
-    constructor(instruction){
+class Logical {
+    constructor(instruction) {
         this.instruction = instruction;
     }
 
-    run(registers, specialRegisters, memory, stack, flag){
-        if(this.instruction === null){
+    run(registers, specialRegisters, memory, stack, flag) {
+
+        if (this.instruction === null) {
             console.log("Instruction is null");
             return;
         }
-        if(this.instruction === undefined){
+        if (this.instruction === undefined) {
             console.log("Instruction is undefined");
             return;
         }
-        if(this.instruction.opCode === cons.MOV){ 
-            let value = 0;    
-            if(typeOfArg(this.instruction.arg1) === cons.REG){
+        if (this.instruction.opCode === cons.MOV) {
+            let value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
                 value = parseInt(registers.getRegister(this.instruction.arg1))
             }
-            if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM){
+            if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
                 value = parseInt(parseNum(this.instruction.arg1));
             }
             registers.setRegister(this.instruction.res, parseInt(value));
         }
+
+        if (this.instruction.opCode === cons.AND) {
+
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG &&
+                (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM)) {
+                arg1 = registers.getRegister(this.instruction.arg1);
+                arg2 = this.instruction.arg2;
+                value = arg1.toString(2) & arg2.toString(2);
+            }
+
+            registers.setRegister(this.instruction.res, value);
+
+        }
+
+
     }
 }
 
-export {Logical}
+export { Logical }
