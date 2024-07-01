@@ -92,8 +92,15 @@ export function generateQuads(result) {
                         case 'Section':
                             quads[quads.length - 1].setResult(element.children[0].value);
                             break;
+
                     }
 
+                    break;
+                case "DIRECTIVE":
+                    if (element.children.length > 0 && quads.length > 0) {
+                        quads[quads.length - 1].setOperator(element.children[0].value);
+                        quads[quads.length - 1].setArg1(element.children[1].value);
+                    }
                     break;
 
                 case "DESTINATION": // Asignar el valor del resultado del cuadruplo
@@ -115,6 +122,7 @@ export function generateQuads(result) {
                     // Verificar si el label corresponde a una etiqueta de salto y asignarla al resultado
                     if (element.value === 'LABEL') quads[quads.length - 1].setResult(element.children[0].value);
                     break;
+
             }
 
             generateQuads(element); // llamada recursiva para ir a evaluar todos los hijos del nodo actual
