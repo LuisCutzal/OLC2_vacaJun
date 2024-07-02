@@ -34,14 +34,44 @@ class Registers {
         }
     }
 
-    // set register of typeRegister
-    setRegister(regString, value) {
+       // set register of typeRegister
+       setRegister(regString, value) {
         const { type, index } = this.parseRegister(regString);
+
         if (this.registers[type] !== undefined && index < this.registers[type].length) {
-            this.registers[type][index] =
-                (type === 'x' || type === 'd' || type === 'q' || type === 'v')
-                    ? BigInt(value)
-                    : value;
+            switch (type) {
+                case 'x': // 64 bits integer
+                case 'd': // 64 bits double precision floating point
+                    value = BigInt(value);
+                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFn) {
+                        throw new Error(`Value out of range for 64-bit register: ${value}`);
+                    }
+                    this.registers[type][index] = value;
+                    break;
+                case 'w': // 32 bits integer
+                case 's': // 32 bits single precision floating point
+                    if (value < 0 || value > 0xFFFFFFFF) {
+                        throw new Error(`Value out of range for 32-bit register: ${value}`);
+                    }
+                    this.registers[type][index] = value;
+                    break;
+                case 'h': // 16 bits integer
+                    if (value < 0 || value > 0xFFFF) {
+                        throw new Error(`Value out of range for 16-bit register: ${value}`);
+                    }
+                    this.registers[type][index] = value;
+                    break;
+                case 'q': // 128 bits integer
+                case 'v': // 128 bits single precision floating point
+                    value = BigInt(value);
+                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
+                        throw new Error(`Value out of range for 128-bit register: ${value}`);
+                    }
+                    this.registers[type][index] = value;
+                    break;
+                default:
+                    throw new Error(`Unknown register type: ${type}`);
+            }
         } else {
             throw new Error('Invalid typeRegister or index out of range');
         }
