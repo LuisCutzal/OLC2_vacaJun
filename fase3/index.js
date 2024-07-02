@@ -231,10 +231,11 @@ const analysis = async () => {
     cleanErrorsTable();
     cleanQuadsTable();
     errorCounter = 0;
+
     try {
         let resultado = parse(text);
         let errors = resultado["errors"]
-        if(errors.length === 0){
+        if (errors.length === 0) {
             resultado = resultado["root"]
             generateCST(resultado.getDot(resultado));
             generateQuads(resultado);
@@ -250,7 +251,7 @@ const analysis = async () => {
             consoleResult.setValue("Error, ver tabla de errores");
             errors.forEach(error => {
                 const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
-                let errorMessage = error.message.replace(new RegExp(',','g'),'');
+                let errorMessage = error.message.replace(new RegExp(',', 'g'), '');
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
                 addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
             });

@@ -27,6 +27,19 @@ class Logical {
             registers.setRegister(this.instruction.res, parseInt(value));
         }
 
+        if (this.instruction.opCode === cons.MVN) {
+            let value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                value = parseInt(registers.getRegister(this.instruction.arg1))
+            }
+            if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
+                value = parseInt(parseNum(this.instruction.arg1));
+            }
+            value = ~value;
+
+            registers.setRegister(this.instruction.res, value);
+        }
+
         if (this.instruction.opCode === cons.AND) {
 
             let arg1 = 0, arg2 = 0, value = 0;
