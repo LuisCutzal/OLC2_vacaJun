@@ -31,49 +31,96 @@ function parseBinaryNum(num) {
     return num;
 }
 
+function binaryToInt(binaryNum, bitLength) {
+    let num = 0, cont = 0, mult = 1;
 
-function binaryToSignedDecimal(binary) {
-    if (binary[0] === '0') {
-        // Positivo, se retorna el valor convertido
-        return parseInt(binary, 2);
+    if (binaryNum.length < bitLength) {
+        binaryNum = binaryNum.padStart(bitLength, '0');
+
+
+    }
+
+    if (binaryNum[0] === '1') {
+        binaryNum = binaryNum.split('').map(bit => (bit === '0' ? '1' : '0'))
+        mult = -1;
+
 
     } else {
-        // Negativo, calcular el complemento a 1
-        let complement = binary.split('').map(bit => (bit === '0' ? '1' : '0')).join('');
-        let decimalValue = parseInt(complement, 2);
-        return -decimalValue;
+        binaryNum = binaryNum.split('');
+
     }
+
+    for (let i = binaryNum.length - 1; i > 0; i--) {
+        num += binaryNum[i] * (2 ** cont);
+        cont++;
+    }
+
+    return num * mult;
 }
 
-
-function decimalToSignedBinary(decimal, bitLength) {
+function intToBinary(decimal, bitLength) {
     let absoluteBinary = Math.abs(decimal).toString(2);
     let signedBinary;
 
     if (decimal >= 0) {
         // Es positivo, rellenar al inicio con 0's para completar los bits de longitud del registro
         signedBinary = absoluteBinary.padStart(bitLength, '0');
+
     } else {
         // Es negativo, calcular el complemento 
         let complement = absoluteBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
         // rellenar con 1's al inicio para completar los bits de longitu del registro
         let filledComplement = complement.padStart(bitLength, '1');
         signedBinary = filledComplement;
+
     }
 
     return signedBinary;
 }
 
-function decimalToUnsignedBinary(decimal, bitLength) {
-    let absoluteBinary = Math.abs(decimal).toString(2);
-    let unsignedBinary;
+function or(arg1, arg2, bitLength) {
+    let value = new Array(bitLength);
 
+    for (let i = 0; i < bitLength; i++) {
+        (arg1[i] === '1' || arg2[i] === '1') ? value[i] = '1' : value[i] = '0';
+    }
 
-    unsignedBinary = absoluteBinary.padStart(bitLength, '0');
-
-
-    return unsignedBinary;
+    return value.join('');
 }
 
+function xor(arg1, arg2, bitLength) {
+    let value = new Array(bitLength);
 
-export { typeOfArg, parseNum, parseBinaryNum, binaryToSignedDecimal, decimalToSignedBinary, decimalToUnsignedBinary }
+    for (let i = 0; i < bitLength; i++) {
+        (arg1[i] === arg2[i]) ? value[i] = '0' : value[i] = '1';
+    }
+
+    return value.join('');
+}
+
+function getBitLength(register) {
+    let reg = register.toLowerCase();
+
+    if (reg[0] === 'q' || reg[0] === 'v') {
+        return 128;
+    }
+
+    if (reg[0] === 'x' || reg[0] === 'd') {
+        return 64;
+    }
+
+    if (reg[0] === 'w' || reg[0] === 's') {
+        return 32;
+    }
+
+    if (reg[0] === 'h') {
+        return 16;
+    }
+
+    return 64;
+
+
+
+}
+
+export { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength }

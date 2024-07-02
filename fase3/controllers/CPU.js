@@ -126,6 +126,11 @@ class CPU {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
+                if (op.opCode == c.ORR) {
+
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
 
 
 

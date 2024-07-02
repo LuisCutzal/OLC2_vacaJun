@@ -1,5 +1,5 @@
 import *  as cons from './const.js';
-import { decimalToUnsignedBinary, binaryToSignedDecimal, decimalToSignedBinary, parseBinaryNum, parseNum, typeOfArg } from './utilitis.js';
+import { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength } from './utilitis.js';
 
 class Logical {
     constructor(instruction) {
@@ -89,9 +89,17 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                // El corrimiento aritmético  a la derecha es equivalente al valor del registro dividido por (2 ** corrimiento)
-                value = Math.round(arg1 / (2 ** arg2));
-                //value = decimalToSignedBinary(value, 32);
+
+                value = intToBinary(arg1, getBitLength(this.instruction.res)); // convertir a binario
+                value = value.slice(0, value.length - arg2); // corrimiento a la derecha
+                if (arg1 < 0) {
+                    value = value.padStart(getBitLength(this.instruction.res), '1'); // rellenar el corrimiento con 1's
+                } else {
+                    value = value.padStart(getBitLength(this.instruction.res), '0'); // rellenar el corrimiento con 0's
+                }
+
+                value = binaryToInt(value, getBitLength(this.instruction.res));
+
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -110,13 +118,13 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
+                value = intToBinary(Math.abs(arg1), getBitLength(this.instruction.res)); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de derecha a izquierda
                 let fillingVals = new Array(arg2).fill('0');
 
                 value = [...value.slice(arg2), ...fillingVals.join('')].join('');
-                value = binaryToSignedDecimal(value);
+                value = binaryToInt(value, getBitLength(this.instruction.res));
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -135,13 +143,13 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
+                value = intToBinary(Math.abs(arg1), getBitLength(this.instruction.res)); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de  izquierda a derecha 
                 let fillingVals = new Array(arg2).fill('0');
 
                 value = [...fillingVals.join(''), ...value.slice(0, value.length - arg2)].join('');
-                value = binaryToSignedDecimal(value);
+                value = binaryToInt(value, getBitLength(this.instruction.res));
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -160,10 +168,10 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = decimalToUnsignedBinary(arg1, 32); // obtengo el número en binario 
+                value = intToBinary(arg1, getBitLength(this.instruction.res)); // obtengo el número en binario 
                 //aplicar corrimiento circular 
                 value = [...value.slice(value.length - arg2), ...value.slice(0, value.length - arg2)].join('');
-                value = binaryToSignedDecimal(value);
+                value = binaryToInt(value, getBitLength(this.instruction.res));
             }
 
             registers.setRegister(this.instruction.res, value);
@@ -182,12 +190,10 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                arg1 = decimalToSignedBinary(arg1, 32); // obteniendo el binario de arg1 (rn)
-                arg2 = decimalToSignedBinary((arg2 * -1), 32); // obteniendo el binario de la negación de arg2 (~op2)
+                arg1 = intToBinary(arg1, getBitLength(this.instruction.res)); // obteniendo el binario de arg1 (rn)
+                arg2 = intToBinary((arg2 * -1), getBitLength(this.instruction.res)); // obteniendo el binario de la negación de arg2 (~op2)
 
                 value = arg1 & arg2; // rd = rn & ~op2
-
-
 
             }
 
@@ -207,13 +213,35 @@ class Logical {
                     arg2 = parseInt(registers.getRegister(this.instruction.arg2));
                 }
 
-                arg1 = decimalToUnsignedBinary(arg1, 32); // obteniendo el binario de arg1 (rn)
-                arg2 = decimalToUnsignedBinary(arg2, 32); // obteniendo el binario de arg2 (op2)
+                arg1 = intToBinary(arg1, getBitLength(this.instruction.res)); // obteniendo el binario de arg1 (rn)
+                arg2 = intToBinary(arg2, getBitLength(this.instruction.res)); // obteniendo el binario de arg2 (op2)
 
-                value = arg1 ^ arg2; // rd = rn xor op2
-                value = parseInt(value, 2);
+                value = xor(arg1, arg2, getBitLength(this.instruction.res)); // rd = rn xor op2
+                value = binaryToInt(value, getBitLength(this.instruction.res));
+            }
 
+            registers.setRegister(this.instruction.res, value);
 
+            return;
+        }
+
+        if (this.instruction.opCode === cons.ORR) {
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                }
+
+                arg1 = intToBinary(arg1, getBitLength(this.instruction.res)).split(''); // obteniendo el binario de arg1 (rn)
+                arg2 = intToBinary(arg2, getBitLength(this.instruction.res)).split(''); // obteniendo el binario de arg2 (op2)
+
+                value = or(arg1, arg2, getBitLength(this.instruction.res)); // rd = rn or op2
+
+                value = binaryToInt(value, getBitLength(this.instruction.res));
 
             }
 
