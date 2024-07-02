@@ -139,6 +139,18 @@ export function generateQuads(result) {
                 case "INTEGER":
                     quads[quads.length - 1].setArg1(element.value);
                     break;
+                case "CONDITION_CODE":
+
+                    if (quads[quads.length - 1].getArg1() === '-') {
+                        quads[quads.length - 1].setArg1(element.value);
+                    } else if (quads[quads.length - 1].getArg2() === '-') {
+                        quads[quads.length - 1].setArg2(element.value);
+                    } else if (quads[quads.length - 1].getArg3() === '-') {
+                        quads[quads.length - 1].setArg3(element.value);
+                    }
+
+                    break;
+
 
 
             }
