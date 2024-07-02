@@ -171,6 +171,59 @@ class Logical {
             return;
         }
 
+        if (this.instruction.opCode === cons.BIC) {
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                }
+
+                arg1 = decimalToSignedBinary(arg1, 32); // obteniendo el binario de arg1 (rn)
+                arg2 = decimalToSignedBinary((arg2 * -1), 32); // obteniendo el binario de la negación de arg2 (~op2)
+
+                value = arg1 & arg2; // rd = rn & ~op2
+
+
+
+            }
+
+            registers.setRegister(this.instruction.res, value);
+
+            return;
+        }
+
+        if (this.instruction.opCode === cons.EOR) {
+            let arg1 = 0, arg2 = 0, value = 0;
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                }
+
+                arg1 = decimalToUnsignedBinary(arg1, 32); // obteniendo el binario de arg1 (rn)
+                arg2 = decimalToUnsignedBinary(arg2, 32); // obteniendo el binario de arg2 (op2)
+
+                value = arg1 ^ arg2; // rd = rn xor op2
+                value = parseInt(value, 2);
+
+
+
+            }
+
+            registers.setRegister(this.instruction.res, value);
+
+            return;
+        }
+
+
+
     }
 }
 

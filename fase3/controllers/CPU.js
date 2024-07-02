@@ -100,7 +100,6 @@ class CPU {
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
 
-
                 if (op.opCode == c.ASR) {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
@@ -122,6 +121,14 @@ class CPU {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
+                if (op.opCode == c.EOR) {
+
+                    this.logical.instruction = op;
+                    this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+
+
+
                 /*****************Branch Instructions***********************/
                 if (op.opCode == c.BEQ) {
                     this.branch.instruction = op;
