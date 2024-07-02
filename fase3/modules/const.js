@@ -127,11 +127,11 @@ export function createCode(ope) {
     if (op === 'PC') return 115
     if (op === 'W') return 116
     if (op === 'WZR') return 117
-    /*if (op === 'D_NUM') return 118
+    if (op === 'D_NUM') return 118
     if (op === 'NUM') return 119
     if (op === 'REG') return 120
     if (op === 'ISLABEL') return 121
-    if (op === 'ERRORTYPE') return 122*/
+    if (op === 'ERRORTYPE') return 122
     if (op === 'EQ') return 123
     if (op === 'NE') return 124
     if (op === 'CS') return 125

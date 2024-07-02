@@ -1,4 +1,4 @@
-import { D_NUM, NUM, REG, ISLABEL, ERRORTYPE } from './const.js';
+import { D_NUM, NUM, REG, ISLABEL, ERRORTYPE, AL} from './const.js';
 
 
 function typeOfArg(arg) {
@@ -14,6 +14,9 @@ function typeOfArg(arg) {
     if (!isNaN(arg)) {
         return D_NUM;
     }
+    /*if(arg.length >= 2 && (arg[0] + arg[1]).toLowerCase() === 'al'){
+        return AL;
+    }*/
     return ERRORTYPE;
 }
 
