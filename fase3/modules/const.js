@@ -127,8 +127,26 @@ export function createCode(ope) {
     if (op === 'PC') return 115
     if (op === 'W') return 116
     if (op === 'WZR') return 117
-    //if (op === '') return 
-
+    /*if (op === 'D_NUM') return 118
+    if (op === 'NUM') return 119
+    if (op === 'REG') return 120
+    if (op === 'ISLABEL') return 121
+    if (op === 'ERRORTYPE') return 122*/
+    if (op === 'EQ') return 123
+    if (op === 'NE') return 124
+    if (op === 'CS') return 125
+    if (op === 'CC') return 126
+    if (op === 'MI') return 127
+    if (op === 'PL') return 128
+    if (op === 'VS') return 129
+    if (op === 'VC') return 130
+    if (op === 'HI') return 131
+    if (op === 'LS') return 132
+    if (op === 'GE') return 133
+    if (op === 'LT') return 134
+    if (op === 'GT') return 135
+    if (op === 'LE') return 136
+    if (op === 'AL') return 137
 
 }
 
@@ -264,3 +282,19 @@ export const NUM = 119 //#numero
 export const REG = 120 //registro
 export const ISLABEL = 121 //es esto -> LABEL:
 export const ERRORTYPE = 122 
+    /*****************CONDITION CODES***********************/
+export const EQ = 123
+export const NE = 124 
+export const CS = 125 
+export const CC = 126 
+export const MI = 127 
+export const PL = 128 
+export const VS = 129 
+export const VC = 130 
+export const HI = 131 
+export const LS = 132 
+export const GE = 133
+export const LT = 134
+export const GT = 135
+export const LE = 136
+export const AL = 137
