@@ -82,7 +82,7 @@ class Arithmetic {
                 reg1 = this.instruction.arg1;
                 res = parseNum(this.instruction.arg2)
                 valR1 = parseInt(registers.getRegister(this.instruction.arg1))
-                valor = res - valR1
+                valor = valR1 - res 
                 if (valor < 0) {
                     flag.N = 1
                 }
@@ -102,7 +102,7 @@ class Arithmetic {
                 reg1 = this.instruction.arg1;
                 res = parseNum(this.instruction.arg2)
                 valR1 = parseInt(registers.getRegister(this.instruction.arg1))
-                valor = res - valR1
+                valor = valR1 - res
                 if (valor < 0) {
                     flag.N = 1
                 }

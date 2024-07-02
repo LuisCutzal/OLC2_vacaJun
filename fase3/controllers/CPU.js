@@ -142,7 +142,11 @@ class CPU {
 
 
                 /*****************Branch Instructions***********************/
-                if (op.opCode == c.BEQ) {
+                if(op.opCode == c.BLT){ //ramificación si menor que 
+                    this.branch.instruction = op;
+                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                }
+                if (op.opCode == c.BEQ) {//branch if equal
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
@@ -154,7 +158,7 @@ class CPU {
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
-                if (op.opCode == c.B) {
+                if (op.opCode == c.B) { //salto incondicional
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
