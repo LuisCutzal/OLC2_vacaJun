@@ -75,6 +75,7 @@ class Registers {
         } else {
             throw new Error('Invalid typeRegister or index out of range');
         }
+        
     }
     //Optional: Method to get hex respresentation all of registers
     toHex() {
