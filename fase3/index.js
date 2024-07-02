@@ -233,31 +233,30 @@ const analysis = async () => {
     errorCounter = 0;
     try {
         let resultado = parse(text);
-        generateCST(resultado.getDot(resultado));
-        generateQuads(resultado);
-        addQuadsToTable();
-        let cpu = new CPU();
-        cpu.instructions = quads;
-        cpu.run();
-        showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
-        showMemory(cpu.memory);
+        let errors = resultado["errors"]
+        if(errors.length === 0){
+            resultado = resultado["root"]
+            generateCST(resultado.getDot(resultado));
+            generateQuads(resultado);
+            addQuadsToTable();
+            let cpu = new CPU();
+            cpu.instructions = quads;
+            cpu.run();
+            showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
+            showMemory(cpu.memory);
+        }
 
-
-
-
-        /*if (resultado.errors.length > 0) {
+        if (errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
-            resultado.errors.forEach(error => {
+            errors.forEach(error => {
                 const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
-                console.log(error.message.includes("Unrecognized input"))
-                const errorMessage = error.message;
+                let errorMessage = error.message.replace(new RegExp(',','g'),'');
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
-
                 addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
             });
         } else {
             consoleResult.setValue("VALIDO");
-        }*/
+        }
     } catch (e) {
         if (e instanceof SyntaxError) {
             const errorType = 'Sintáctico';

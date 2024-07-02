@@ -46,6 +46,8 @@
             console.clear();
             return dot;
         }
+        
+        
     }
     // Funciones para crear y manipular nodos del árbol de sintaxis concreto "CST"
     function createNode(type, value, children = []){
@@ -92,16 +94,40 @@
         return dot;
     }
     const root = createNode('START', 'START');
+    
+    	const errors = [];
+
+        function buildSyntaxError(message, location, invalidChar) {
+            const error = new Error(`${message}: '${invalidChar}'`);
+            error.location = location;
+            error.invalidChar = invalidChar;
+            return error;
+        }
 }
 // Iniciamos el análisis sintáctico con la regla inicial "start"
 start
-    = line:(directive / section / instruction / comment / mcomment / blank_line)*
+    = line:(directive / section / instruction / comment / mcomment / invalid / blank_line)*
         {
-            root.children = [...line];
-            root.children = root.children.filter(node => node.type !== 'EMPTY');
-            root.children = root.children.filter(node => node.type !== 'COMMENT');
-            return root;
+          line = line.filter(element => element !== null)
+          root.children = [...line];
+          root.children = root.children.filter(node => node.type !== 'EMPTY');
+          root.children = root.children.filter(node => node.type !== 'COMMENT');
+          return {root,errors};
+            
         }
+       
+
+invalid
+    = invalidToken:(!directive_name !section !instruction !blank_line !_ .)+ {
+        errors.push(buildSyntaxError("Invalid token", location(), invalidToken.join(''), "Léxico"));
+        return null; // Continuar con el análisis
+    }
+    / invalidToken:(!blank_line .)+ {
+        errors.push(buildSyntaxError("Unrecognized input", location(), invalidToken.join(''), "Sintáctico"));
+        return null; // Continuar con el análisis
+    }
+
+
 // Directivas en ARM64 v8
 directive
   = _* name:directive_p _* args:(directive_p / label / string / expression)? _* comment? "\n"?
