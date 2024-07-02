@@ -8,6 +8,8 @@ import { Conditional } from '../modules/Conditional.js'
 import { SymbolTable } from '../modules/SymbolTable.js'
 import { DataAndDeclaration } from '../modules/DataAndDeclaration.js'
 
+let errors = []
+
 //flags for ARMv8-A
 const flag = {
     N: 0, Z: 0, C: 0, V: 0,
@@ -165,3 +167,15 @@ class CPU {
 }
 
 export { CPU }
+
+/*
+-----
+ldr
+svc
+ldrb
+beq
+b
+bne
+strb
+
+*/
