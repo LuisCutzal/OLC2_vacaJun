@@ -34,8 +34,8 @@ class Registers {
         }
     }
 
-       // set register of typeRegister
-       setRegister(regString, value) {
+    // set register of typeRegister
+    setRegister(regString, value) {
         const { type, index } = this.parseRegister(regString);
 
         if (this.registers[type] !== undefined && index < this.registers[type].length) {
@@ -75,7 +75,7 @@ class Registers {
         } else {
             throw new Error('Invalid typeRegister or index out of range');
         }
-        
+
     }
     //Optional: Method to get hex respresentation all of registers
     toHex() {
