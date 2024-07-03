@@ -1,5 +1,5 @@
 import *  as cons from './const.js';
-import { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength } from './utilitis.js';
+import { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength, and } from './utilitis.js';
 
 class Logical {
     constructor(instruction) {
@@ -19,7 +19,7 @@ class Logical {
         if (this.instruction.opCode === cons.MOV) {
             let value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                value = registers.getRegister(this.instruction.arg1)
+                value = parseNum(registers.getRegister(this.instruction.arg1));
             }
             if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
                 value = parseNum(this.instruction.arg1);
@@ -30,40 +30,59 @@ class Logical {
         if (this.instruction.opCode === cons.MVN) {
             let value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                value = registers.getRegister(this.instruction.arg1)
+                value = parseNum(registers.getRegister(this.instruction.arg1));
             }
-            if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
+
+            else if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
                 value = parseNum(this.instruction.arg1);
             }
+
+
             value = ~value;
 
-            registers.setRegister(this.instruction.res, value);
+            return registers.setRegister(this.instruction.res, value);
         }
 
         if (this.instruction.opCode === cons.AND) {
 
             let arg1 = 0, arg2 = 0, value = 0;
-            if (typeOfArg(this.instruction.arg1) === cons.REG &&
-                (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM)) {
-                arg1 = registers.getRegister(this.instruction.arg1);
-                arg2 = parseBinaryNum(this.instruction.arg2);
-                value = arg1.toString(2) & arg2.toString(2);
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+                    arg2 = parseNum(this.instruction.arg2);
+
+                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
+                }
+
+                value = and(intToBinary(arg1, getBitLength(this.instruction.res)), intToBinary(arg2, getBitLength(this.instruction.res)), getBitLength(this.instruction.res));
+                value = binaryToInt(value, getBitLength(this.instruction.res));
+
+
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
-
-            return;
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de 32-bits" }
 
         }
 
         if (this.instruction.opCode === cons.ANDS) {
 
             let arg1 = 0, arg2 = 0, value = 0;
-            if (typeOfArg(this.instruction.arg1) === cons.REG &&
-                (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM)) {
-                arg1 = registers.getRegister(this.instruction.arg1);
-                arg2 = parseBinaryNum(this.instruction.arg2);
-                value = arg1.toString(2) & arg2.toString(2);
+            if (typeOfArg(this.instruction.arg1) === cons.REG) {
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
+
+                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
+
+                    arg2 = parseNum(this.instruction.arg2);
+                }
+                else if (typeOfArg(this.instruction.arg2) === cons.REG) {
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
+                }
+
+                value = and(intToBinary(arg1, getBitLength(this.instruction.res)), intToBinary(arg2, getBitLength(this.instruction.res)), getBitLength(this.instruction.res));
+                value = binaryToInt(value, getBitLength(this.instruction.res));
 
                 if (this.instruction.res.substring(1) != 15) {
                     if (value < 0) {
@@ -77,34 +96,37 @@ class Logical {
                         flag.N = 0;
                     }
 
-                    if (arg2 > arg1) {
+                    if (value.toString(2).length > getBitLength(this.instruction.res) || arg2 > arg1) {
                         flag.C = 1;
                     } else {
                         flag.C = 0;
                     }
+
+                    return registers.setRegister(this.instruction.res, value);
                 }
+
+                return { type: "Semántico", line: "", column: "", message: "El valor de Rd no puede ser 1111" }
+
             }
 
-            registers.setRegister(this.instruction.res, value);
-
-            return;
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de 32-bits" }
 
         }
 
         if (this.instruction.opCode === cons.ASR) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(this.instruction.arg2);
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
 
                 value = intToBinary(arg1, getBitLength(this.instruction.res)); // convertir a binario
-                value = value.slice(0, value.length - arg2); // corrimiento a la derecha
+                value = value.slice(0, value.length - Number(arg2)); // corrimiento a la derecha
                 if (arg1 < 0) {
                     value = value.padStart(getBitLength(this.instruction.res), '1'); // rellenar el corrimiento con 1's
                 } else {
@@ -113,117 +135,99 @@ class Logical {
 
                 value = binaryToInt(value, getBitLength(this.instruction.res));
 
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
         }
 
         if (this.instruction.opCode === cons.LSL) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(parseBinaryNum(this.instruction.arg2));
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = intToBinary(Math.abs(arg1), getBitLength(this.instruction.res)); // obtengo el número en binario 
+                value = intToBinary(Math.abs(Number(arg1)), getBitLength(this.instruction.res)); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de derecha a izquierda
-                let fillingVals = new Array(arg2).fill('0');
+                let fillingVals = new Array(Number(arg2)).fill('0');
 
-                value = [...value.slice(arg2), ...fillingVals.join('')].join('');
+                value = [...value.slice(Number(arg2)), ...fillingVals.join('')].join('');
                 value = binaryToInt(value, getBitLength(this.instruction.res));
+
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
+
         }
 
         if (this.instruction.opCode === cons.LSR) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(parseBinaryNum(this.instruction.arg2));
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
-                value = intToBinary(Math.abs(arg1), getBitLength(this.instruction.res)); // obtengo el número en binario 
+                value = intToBinary(Math.abs(Number(arg1)), getBitLength(this.instruction.res)); // obtengo el número en binario 
 
                 //aplicar corrimiento insertando 0's de  izquierda a derecha 
-                let fillingVals = new Array(arg2).fill('0');
+                let fillingVals = new Array(Number(arg2)).fill('0');
 
-                value = [...fillingVals.join(''), ...value.slice(0, value.length - arg2)].join('');
+                value = [...fillingVals.join(''), ...value.slice(0, value.length - Number(arg2))].join('');
                 value = binaryToInt(value, getBitLength(this.instruction.res));
+
+                return registers.setRegister(this.instruction.res, value);
+
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
         }
 
         if (this.instruction.opCode === cons.ROR) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(parseBinaryNum(this.instruction.arg2));
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
                 value = intToBinary(arg1, getBitLength(this.instruction.res)); // obtengo el número en binario 
                 //aplicar corrimiento circular 
-                value = [...value.slice(value.length - arg2), ...value.slice(0, value.length - arg2)].join('');
+                value = [...value.slice(value.length - Number(arg2)), ...value.slice(0, value.length - Number(arg2))].join('');
                 value = binaryToInt(value, getBitLength(this.instruction.res));
+
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
-        }
-
-        if (this.instruction.opCode === cons.BIC) {
-            let arg1 = 0, arg2 = 0, value = 0;
-            if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
-
-                if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
-                } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
-                }
-
-                arg1 = intToBinary(arg1, getBitLength(this.instruction.res)); // obteniendo el binario de arg1 (rn)
-                arg2 = intToBinary((arg2 * -1), getBitLength(this.instruction.res)); // obteniendo el binario de la negación de arg2 (~op2)
-
-                value = arg1 & arg2; // rd = rn & ~op2
-
-            }
-
-            registers.setRegister(this.instruction.res, value);
-
-            return;
         }
 
         if (this.instruction.opCode === cons.EOR) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(parseBinaryNum(this.instruction.arg2));
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
                 arg1 = intToBinary(arg1, getBitLength(this.instruction.res)); // obteniendo el binario de arg1 (rn)
@@ -231,22 +235,23 @@ class Logical {
 
                 value = xor(arg1, arg2, getBitLength(this.instruction.res)); // rd = rn xor op2
                 value = binaryToInt(value, getBitLength(this.instruction.res));
+
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
         }
 
         if (this.instruction.opCode === cons.ORR) {
             let arg1 = 0, arg2 = 0, value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                arg1 = parseNum(registers.getRegister(this.instruction.arg1));
 
                 if (typeOfArg(this.instruction.arg2) === cons.NUM || typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                    arg2 = parseInt(parseBinaryNum(this.instruction.arg2));
+                    arg2 = parseNum(parseBinaryNum(this.instruction.arg2));
                 } else if (typeOfArg(this.instruction.arg2) === cons.REG) {
-                    arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                    arg2 = parseNum(registers.getRegister(this.instruction.arg2));
                 }
 
                 arg1 = intToBinary(arg1, getBitLength(this.instruction.res)).split(''); // obteniendo el binario de arg1 (rn)
@@ -256,11 +261,11 @@ class Logical {
 
                 value = binaryToInt(value, getBitLength(this.instruction.res));
 
+                return registers.setRegister(this.instruction.res, value);
             }
 
-            registers.setRegister(this.instruction.res, value);
+            return { type: "Semántico", line: "", column: "", message: "El primer argumento debe debe ser un registro de propósito general" }
 
-            return;
         }
 
 

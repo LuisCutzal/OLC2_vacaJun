@@ -1,4 +1,4 @@
-import { D_NUM, NUM, REG, ISLABEL, ERRORTYPE, AL} from './const.js';
+import { D_NUM, NUM, REG, ISLABEL, ERRORTYPE, AL } from './const.js';
 
 
 function typeOfArg(arg) {
@@ -62,7 +62,7 @@ function binaryToInt(binaryNum, bitLength) {
 }
 
 function intToBinary(decimal, bitLength) {
-    let absoluteBinary = Math.abs(decimal).toString(2);
+    let absoluteBinary = Math.abs(Number(decimal)).toString(2);
     let signedBinary;
 
     if (decimal >= 0) {
@@ -101,6 +101,16 @@ function xor(arg1, arg2, bitLength) {
     return value.join('');
 }
 
+function and(arg1, arg2, bitLength) {
+    let value = new Array(bitLength);
+
+    for (let i = 0; i < bitLength; i++) {
+        (arg1[i] === '1' && arg2[i] === '1') ? value[i] = '1' : value[i] = '0';
+    }
+
+    return value.join('');
+}
+
 function getBitLength(register) {
     let reg = register.toLowerCase();
 
@@ -126,4 +136,4 @@ function getBitLength(register) {
 
 }
 
-export { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength }
+export { typeOfArg, parseNum, parseBinaryNum, binaryToInt, intToBinary, or, xor, getBitLength, and }
