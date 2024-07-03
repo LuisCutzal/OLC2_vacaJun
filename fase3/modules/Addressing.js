@@ -4,8 +4,9 @@ import { typeOfArg, parseNum } from './utilitis.js';
 class Addressing{
     constructor(instruction){
         this.instruction = instruction
+        this.errors = []
     }
-    run(registers, specialRegisters, memory, stack, flag){
+    run(registers, specialRegisters, memory, stack, flag, symbolTable){
         if (this.instruction === null) {
             console.log("Instruction is null");
             return;
@@ -16,12 +17,13 @@ class Addressing{
         }
         if(this.instruction.opCode === cons.LDR){
             if(typeOfArg(this.instruction.res) !== cons.REG){
-                console.log("Error, debe utilizar un registro")
-                console.log(specialRegisters.PC)
+                this.errors.push({type: "Error semantico ",line:this.specialRegisters.PC,column:"0",message:`Error, debe utilizar un registro : ${this.instruction.res} `})
             }
+            //console.log(specialRegisters.PC)
+            //console.log(symbolTable)
             let registroDestino = this.instruction.res
             let val = this.instruction.arg1 //cargará el valor (que tiene en memoria la etiqueta) a registroDestino
-            console.log(val)
+            //console.log(val)
         }
         if(this.instruction.opCode === cons.SVC){ //Llamada al sistema
             /*
