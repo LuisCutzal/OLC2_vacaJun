@@ -175,6 +175,7 @@ class CPU {
                 if(op.opCode == c.SVC){ //Supervisor Call
                     this.addressing.instruction = op;
                     this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                    return
                 }
                 if(op.opCode == c.LDRB){
                     this.addressing.instruction = op;

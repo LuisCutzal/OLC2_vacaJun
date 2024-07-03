@@ -17,6 +17,7 @@ class Addressing{
         if(this.instruction.opCode === cons.LDR){
             if(typeOfArg(this.instruction.res) !== cons.REG){
                 console.log("Error, debe utilizar un registro")
+                console.log(specialRegisters.PC)
             }
             let registroDestino = this.instruction.res
             let val = this.instruction.arg1 //cargará el valor (que tiene en memoria la etiqueta) a registroDestino
@@ -28,7 +29,9 @@ class Addressing{
             x8 (o w8 para 32 bits) normalmente contiene el número de la syscall.
             El valor de retorno de la syscall suele ser almacenado en x0 (o w0)
             */
-            console.log("svc")
+            if (this.instruction.arg1 === 0){
+                memory.free(0) //libera la memoria
+            }
         }
         if(this.instruction.opCode === cons.LDRB){
             console.log("ldrb")
