@@ -22,9 +22,9 @@ function typeOfArg(arg) {
 
 function parseNum(num) {
     if (num[0] === '#') {
-        return parseInt(num.slice(1));
+        return BigInt(num.slice(1));
     }
-    return parseInt(num);
+    return BigInt(num);
 }
 
 function parseBinaryNum(num) {
