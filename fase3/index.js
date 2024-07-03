@@ -70,6 +70,11 @@ function showSelectedTab(id) {
     //Actualizar el editor del que se extraerá el texto para el análisis
     Arm64Editor = Arm64Editors[id];
 
+    // Mostrar la línea actual
+    //Arm64Editor.addLineClass(2, "background", "highlighted-line");
+    Arm64Editor.addLineClass(1, "background", "highlighted-line");
+    //lineElement.className += "highlited-line";
+
     //mostrar todas las pestañas
     let btns = document.querySelectorAll(".LEditor .textEditor .buttonTab");
 
@@ -167,7 +172,7 @@ function toggleVisibility(id) {
 
 function editor(id, language, lineNumbers = true, readOnly = false, styleActiveLine = true) {
     return CodeMirror.fromTextArea(document.getElementById(id), {
-        lineNumbers: lineNumbers,
+        lineNumbers: true,
         readOnly: readOnly,
         styleActiveLine: styleActiveLine,
         matchBrackets: true,
@@ -230,6 +235,7 @@ const analysis = async () => {
     //const text = currentStr;
     cleanErrorsTable();
     cleanQuadsTable();
+    consoleResult.setValue("");
     errorCounter = 0;
     let listErrorsSemanticos = []
     try {
@@ -247,7 +253,7 @@ const analysis = async () => {
             //console.log(cpu.errors)
             showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
             showMemory(cpu.memory);
-        }       
+        }
 
         if (errors.length > 0 || listErrorsSemanticos.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
@@ -257,11 +263,11 @@ const analysis = async () => {
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
                 addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
             });
-            listErrorsSemanticos.forEach(error =>{
+            listErrorsSemanticos.forEach(error => {
                 const errorType = error.type
                 let errorMessage = error.message
                 const errorLine = `Fila: ${error.line}`
-                const errorCol =  `Columna: ${error.column}`;
+                const errorCol = `Columna: ${error.column}`;
                 addErrorToTable(errorType, errorLine, errorCol, errorMessage);
             });
         } else {
@@ -296,6 +302,128 @@ const analysis = async () => {
     }, 3000);
 
 };
+
+const assembly = async () => {
+    let startTime = performance.now(); // Guardar tiempo de inicio
+    const text = Arm64Editor.getValue();
+    //const text = currentStr;
+    cleanErrorsTable();
+    cleanQuadsTable();
+    consoleResult.setValue("");
+    errorCounter = 0;
+    //let listErrorsSemanticos = []
+    try {
+        let resultado = parse(text);
+        let errors = resultado["errors"]
+        if (errors.length === 0) {
+            resultado = resultado["root"]
+            generateCST(resultado.getDot(resultado));
+            generateQuads(resultado);
+            addQuadsToTable();
+            /*
+            let cpu = new CPU();
+            cpu.instructions = quads;
+            cpu.run();
+            listErrorsSemanticos = cpu.errors
+            //console.log(cpu.errors)
+            showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
+            showMemory(cpu.memory);*/
+        }
+
+        if (errors.length > 0 || listErrorsSemanticos.length > 0) {
+            consoleResult.setValue("Error, ver tabla de errores");
+            errors.forEach(error => {
+                const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
+                let errorMessage = error.message.replace(new RegExp(',', 'g'), '');
+                const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
+                addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
+            });
+            // listErrorsSemanticos.forEach(error => {
+            //     const errorType = error.type
+            //     let errorMessage = error.message
+            //     const errorLine = `Fila: ${error.line}`
+            //     const errorCol = `Columna: ${error.column}`;
+            //     addErrorToTable(errorType, errorLine, errorCol, errorMessage);
+            // });
+        } else {
+            consoleResult.setValue("VALIDO");
+        }
+    } catch (e) {
+        if (e instanceof SyntaxError) {
+            const errorType = 'Sintáctico';
+            const errorMessage = e.message;
+            const errorLocation = `Fila: ${e.location.start.line}, Columna: ${e.location.start.column}`;
+
+            consoleResult.setValue(`Error, ver tabla de errores`);
+            console.log(errorMessage);
+
+            addErrorToTable(errorType, e.location.start.line, e.location.start.column, errorMessage);
+        } else {
+            console.error('Error desconocido:', e);
+        }
+    }
+
+    let endTime = performance.now();
+    const elapsedTime = (endTime - startTime).toFixed(3);
+    // Mostrar el tiempo transcurrido en un elemento del DOM
+    const tiempoTranscurridoElement = document.getElementById('tiempoTranscurrido');
+    tiempoTranscurridoElement.textContent = `Tardó ${elapsedTime} milisegundos en completar el análisis.`;
+
+
+
+    tiempoTranscurridoElement.style.display = 'block'; // mostrar el mensaje
+    setTimeout(function () {
+        tiempoTranscurridoElement.style.display = 'none'; // ocultar el mensaje después de 3 segundos
+    }, 3000);
+
+};
+
+function end() {
+    let cpu = new CPU();
+    cpu.instructions = quads;
+    cpu.run();
+    let listErrorsSemanticos = cpu.errors
+    //console.log(cpu.errors)
+    showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
+    showMemory(cpu.memory);
+
+    if (listErrorsSemanticos.length > 0) {
+        consoleResult.setValue("Error, ver tabla de errores");
+        listErrorsSemanticos.forEach(error => {
+            const errorType = error.type
+            let errorMessage = error.message
+            const errorLine = `Fila: ${error.line}`
+            const errorCol = `Columna: ${error.column}`;
+            addErrorToTable(errorType, errorLine, errorCol, errorMessage);
+        });
+    } else {
+        consoleResult.setValue("VALIDO");
+    }
+}
+
+function step() {
+    let cpu = new CPU();
+    cpu.instructions = quads;
+    cpu.step();
+    let listErrorsSemanticos = cpu.errors
+    //console.log(cpu.errors)
+    showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
+    showMemory(cpu.memory);
+
+    if (listErrorsSemanticos.length > 0) {
+        consoleResult.setValue("Error, ver tabla de errores");
+        listErrorsSemanticos.forEach(error => {
+            const errorType = error.type
+            let errorMessage = error.message
+            const errorLine = `Fila: ${error.line}`
+            const errorCol = `Columna: ${error.column}`;
+            addErrorToTable(errorType, errorLine, errorCol, errorMessage);
+        });
+    } else {
+        consoleResult.setValue("VALIDO");
+    }
+}
+
 
 function cleanErrorsTable() {
     const table = document.getElementById('errorsTable');
@@ -550,3 +678,40 @@ btnMem.addEventListener('click', () => { showOutputTab(3) });
 
 const btnFlag = document.getElementById('flags_tab');
 btnFlag.addEventListener('click', () => { toggleVisibility('flag') });
+
+const btnAssy = document.getElementById('assy');
+btnAssy.addEventListener('click', () => {
+    assembly();
+
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+
+    // obtener el console log y añadirle animación cada que muestre un resultado
+    codeMirrors[codeMirrors.length - 1].style.animation = "none";
+    codeMirrors[codeMirrors.length - 1].offsetHeight;
+    codeMirrors[codeMirrors.length - 1].style.animation = "rainbow 0.5s";
+});
+
+const btnStep = document.getElementById('step');
+btnStep.addEventListener('click', () => {
+    step();
+
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+
+    // obtener el console log y añadirle animación cada que muestre un resultado
+    codeMirrors[codeMirrors.length - 1].style.animation = "none";
+    codeMirrors[codeMirrors.length - 1].offsetHeight;
+    codeMirrors[codeMirrors.length - 1].style.animation = "rainbow 0.5s";
+});
+
+const btnEnd = document.getElementById('end');
+btnEnd.addEventListener('click', () => {
+    end();
+
+    let codeMirrors = document.querySelectorAll('.CodeMirror');
+
+    // obtener el console log y añadirle animación cada que muestre un resultado
+    codeMirrors[codeMirrors.length - 1].style.animation = "none";
+    codeMirrors[codeMirrors.length - 1].offsetHeight;
+    codeMirrors[codeMirrors.length - 1].style.animation = "rainbow 0.5s";
+});
+

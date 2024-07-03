@@ -210,6 +210,7 @@ class Logical {
                 value = intToBinary(arg1, getBitLength(this.instruction.res)); // obtengo el número en binario 
                 //aplicar corrimiento circular 
                 value = [...value.slice(value.length - Number(arg2)), ...value.slice(0, value.length - Number(arg2))].join('');
+
                 value = binaryToInt(value, getBitLength(this.instruction.res));
 
                 return registers.setRegister(this.instruction.res, value);

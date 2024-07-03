@@ -209,33 +209,35 @@ h4 {
     justify-content: center;
     position: relative;
     z-index: 1;
+
+
 }
 
 .containerE {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 98%;
+
+    width: 99%;
     background-color: var(--background-color-middy);
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 90vh;
     border-radius: 25px 25px 25px 25px;
 }
 
 .LEditor {
     text-align: left;
-    width: 45%;
+    width: 47%;
     height: 95%;
     color: #FFFFFF;
+
 }
 
 .REditor {
     text-align: left;
-    width: 45%;
+    width: 47%;
     height: 95%;
     color: #FFFFFF;
+
 }
 
 .textEditor {
@@ -258,10 +260,10 @@ h4 {
 
 }
 
+.highlighted-line {
+    background-color: greenyellow;
+}
 
-/* .CodeMirror pre:nth-child(3) {
-    background-color: yellow;
-} */
 
 
 .infoTable {
@@ -317,41 +319,47 @@ td:hover {
                                     BUTTON
   ----------------------------------------------------------------------------------*/
 .wrap {
-    /*height: 100%;*/
+    width: 5%;
+    height: 40%;
+
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     margin-top: 10px;
+
 }
 
 .button-run {
-    min-width: 40px;
-    min-height: 30px;
+    min-width: 25%;
+    min-height: 10%;
     font-family: 'Nunito', sans-serif;
-    font-size: 22px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1.3px;
     font-weight: 700;
     color: #313133;
-    background: var(--green-background);
-    background: linear-gradient(90deg, rgb(63, 209, 96) 0%, rgb(40, 167, 69) 100%);
+    /* background: var(--green-background); */
+    /* background: linear-gradient(90deg, rgb(63, 209, 96) 0%, rgb(40, 167, 69) 100%); */
     border: none;
     border-radius: 1000px;
-    box-shadow: 12px 12px 24px rgba(40, 167, 69, 0.64);
+    box-shadow: 6px 6px 12px rgba(40, 167, 69, 0.64);
     transition: all 0.3s ease-in-out 0s;
     cursor: pointer;
     outline: none;
     position: relative;
-    padding: 10px;
+    padding: 15%;
 }
 
 .button-run::before {
     content: '';
     border-radius: 1000px;
-    min-width: calc(80px + 12px);
-    min-height: calc(60px + 12px);
+    /* min-width: calc(40px + 6px);
+    min-height: calc(40px + 6px); */
+    min-width: 105%;
+    min-height: 105%;
     border: 3px solid var(--highlight-color);
-    box-shadow: 0 0 60px rgba(255, 87, 34, 0.64);
+    box-shadow: 0 0 30px rgba(255, 87, 34, 0.64);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -363,7 +371,7 @@ td:hover {
 .button-run:hover,
 .button-run:focus {
     color: #313133;
-    transform: translateY(-6px);
+    transform: translateY(-3px);
 }
 
 .button-run:hover::before,
