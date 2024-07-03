@@ -10,6 +10,7 @@ class Registers {
             q: new Array(32).fill(0n), // 128 bits integer
             v: new Array(32).fill(0n), // 128 bits single precision floating point  
         }
+        this.errors = [] //{type, line, column, message}
     }
 
     //parse register name to typeRegister and index
