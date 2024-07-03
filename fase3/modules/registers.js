@@ -53,11 +53,10 @@ class Registers {
                         //throw new Error(`Value out of range for 64-bit register: ${value}`);
                         return
                     }
-                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFn) {
+                    if (value > 0xFFFFFFFFFFFFFFFFn) {
                         this.errors.push({type: "Error semantico ",line:this.PC,column:"0",message:`Value out of range for 64-bit register ${type+index}: ${value} `})
-                        return
                         //throw new Error(`Value out of range for 64-bit register: ${value}`);
-
+                        return
                     }
                     this.registers[type][index] = value;
                     break;
@@ -69,7 +68,7 @@ class Registers {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 32-bit register ${type+index}: ${value}`})
                         return
                     }
-                    if (value < 0 || value > 0xFFFFFFFF) {
+                    if (value > 0xFFFFFFFF) {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 32-bit register ${type+index}: ${value}`})
                         return
                         //throw new Error(`Value out of range for 32-bit register: ${value}`);
@@ -84,7 +83,7 @@ class Registers {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 16-bit register: ${value}`})
                         return
                     }
-                    if (value < 0 || value > 0xFFFF) {
+                    if (value > 0xFFFF) {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 16-bit register: ${value}`})
                         return
                         //throw new Error(`Value out of range for 16-bit register: ${value}`);
@@ -100,7 +99,7 @@ class Registers {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 128-bit register: ${value}`})
                         return
                     }
-                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
+                    if (value > 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
                         this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 128-bit register: ${value}`})
                         return
                         //throw new Error(`Value out of range for 128-bit register: ${value}`);
