@@ -8,7 +8,7 @@ import { Conditional } from '../modules/Conditional.js'
 import { SymbolTable } from '../modules/SymbolTable.js'
 import { DataAndDeclaration } from '../modules/DataAndDeclaration.js'
 import { Addressing } from '../modules/Addressing.js'
-let errors = []
+
 
 //flags for ARMv8-A
 const flag = {
@@ -21,6 +21,7 @@ const flag = {
 class CPU {
     constructor() {
         this.registers = new Registers();
+        this.errors = [] //{type, line, column, message}
         this.specialRegisters = new specialRegisters();
         this.memory = new Memory(32 * 1024);
         this.stack = new Stack();
@@ -61,6 +62,7 @@ class CPU {
                 let op = this.instructions[this.specialRegisters.PC]
                 //console.log(op);
                 this.specialRegisters.PC += 1;
+                this.registers.PC = this.specialRegisters.PC
                 //execute
                 /*-----------------Arithmetic Instructions---------------*/
                 if (op.opCode == c.ADD) {
@@ -140,25 +142,70 @@ class CPU {
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
                 /*****************Branch Instructions***********************/
-                if(op.opCode == c.BLT){ //ramificación si menor que 
+                if (op.opCode == c.BLT) { //ramificación si menor que 
                     this.branch.instruction = op;
-                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    let result = this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    if (result) {
+                        let symResult = this.symbolTable.getSymbol(op.res)
+                        if (symResult.column === "0") {
+                            symResult.line = this.specialRegisters.PC
+                            this.errors.push(symResult)
+                            return
+                        }
+                        this.specialRegisters.PC = symResult.address - 1
+                    }
                 }
                 if (op.opCode == c.BEQ) {//branch if equal
                     this.branch.instruction = op;
-                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    let result = this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    if (result) {
+                        let symResult = this.symbolTable.getSymbol(op.res)
+                        if (symResult.column === "0") {
+                            symResult.line = this.specialRegisters.PC
+                            this.errors.push(symResult)
+                            return
+                        }
+                        this.specialRegisters.PC = symResult.address - 1
+                    }
                 }
                 if (op.opCode == c.BNE) {//Branch if Not Equal
                     this.branch.instruction = op;
-                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    let result = this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    if (result) {
+                        let symResult = this.symbolTable.getSymbol(op.res)
+                        if (symResult.column === "0") {
+                            symResult.line = this.specialRegisters.PC
+                            this.errors.push(symResult)
+                            return
+                        }
+                        this.specialRegisters.PC = symResult.address - 1
+                    }
                 }
                 if (op.opCode == c.BLE) { //branch if less than or equal
                     this.branch.instruction = op;
-                    this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    let result = this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    if (result) {
+                        let symResult = this.symbolTable.getSymbol(op.res)
+                        if (symResult.column === "0") {
+                            symResult.line = this.specialRegisters.PC
+                            this.errors.push(symResult)
+                            return
+                        }
+                        this.specialRegisters.PC = symResult.address - 1
+                    }
                 }
                 if (op.opCode == c.B) { //salto incondicional
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
+                    console.log(this.instructions)
+                    let symResult = this.symbolTable.getSymbol(op.res)
+                    if (symResult.column === "0") {
+                        symResult.line = this.specialRegisters.PC
+                        this.errors.push(symResult)
+                        return
+                    }
+                    this.specialRegisters.PC = symResult.address - 1
+
                 }
                 /*****************Conditional Instructions***********************/
                 if (op.opCode == c.CSEL) { //Conditional Select
@@ -166,25 +213,13 @@ class CPU {
                     this.conditional.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
                 /*****************Addressing Modes***********************/
-                if(op.opCode == c.LDR){
+                if (op.opCode == c.LDR || op.opCode == c.SVC || op.opCode == c.LDRB || op.opCode == c.STRB) {
                     this.addressing.instruction = op;
-                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
-                }
-                if(op.opCode == c.SVC){
-                    this.addressing.instruction = op;
-                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
-                }
-                if(op.opCode == c.LDRB){
-                    this.addressing.instruction = op;
-                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
-                }
-                if(op.opCode == c.STRB){
-                    this.addressing.instruction = op;
-                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag, this.symbolTable)
                 }
             }
         }
-
+        this.errors.concat(this.registers.errors)
     }
 }
 

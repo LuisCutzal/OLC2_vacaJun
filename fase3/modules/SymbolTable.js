@@ -10,7 +10,7 @@ class SymbolTable{
 
     getSymbol(symbol){
         if(!(symbol in this.table)){
-            throw new Error(`Symbol ${symbol} not found`)
+            return {type:`Error Semantico`,line:"0",column:"0",message:`Symbol ${symbol} not found`}
         }
         return this.table[symbol]
     }
