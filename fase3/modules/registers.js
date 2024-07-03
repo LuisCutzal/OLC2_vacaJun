@@ -36,28 +36,30 @@ class Registers {
     }
 
     // set register of typeRegister
-    setRegister(regString, value) {
-        const { type, index } = this.parseRegister(regString);
+    setRegister(register, value) {
+        const { type, index } = this.parseRegister(register);
 
         if (this.registers[type] !== undefined && index < this.registers[type].length) {
             switch (type) {
                 case 'x': // 64 bits integer
                 case 'd': // 64 bits double precision floating point
                     value = BigInt(value);
-                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFn) {
+                    if (value < -0x8000000000000000n || value > 0x7FFFFFFFFFFFFFFFn) {
                         throw new Error(`Value out of range for 64-bit register: ${value}`);
                     }
                     this.registers[type][index] = value;
                     break;
                 case 'w': // 32 bits integer
                 case 's': // 32 bits single precision floating point
-                    if (value < 0 || value > 0xFFFFFFFF) {
+                    value = Number(value);
+                    if (value < -0x80000000 || value > 0x7FFFFFFF) {
                         throw new Error(`Value out of range for 32-bit register: ${value}`);
                     }
                     this.registers[type][index] = value;
                     break;
                 case 'h': // 16 bits integer
-                    if (value < 0 || value > 0xFFFF) {
+                    value = Number(value);
+                    if (value < -0x8000 || value > 0x7FFF) {
                         throw new Error(`Value out of range for 16-bit register: ${value}`);
                     }
                     this.registers[type][index] = value;
@@ -65,7 +67,7 @@ class Registers {
                 case 'q': // 128 bits integer
                 case 'v': // 128 bits single precision floating point
                     value = BigInt(value);
-                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
+                    if (value < -0x80000000000000000000000000000000n || value > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
                         throw new Error(`Value out of range for 128-bit register: ${value}`);
                     }
                     this.registers[type][index] = value;
@@ -76,7 +78,6 @@ class Registers {
         } else {
             throw new Error('Invalid typeRegister or index out of range');
         }
-
     }
     //Optional: Method to get hex respresentation all of registers
     toHex() {
