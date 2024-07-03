@@ -215,7 +215,7 @@ class CPU {
                 /*****************Addressing Modes***********************/
                 if (op.opCode == c.LDR || op.opCode == c.SVC || op.opCode == c.LDRB || op.opCode == c.STRB) {
                     this.addressing.instruction = op;
-                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag, this.symbolTable)
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag, this.symbolTable, this.instructions)
                 }
             }
         }
