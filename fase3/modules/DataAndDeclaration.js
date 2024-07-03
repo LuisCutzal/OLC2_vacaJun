@@ -35,11 +35,13 @@ class DataAndDeclaration {
                         symbolTable.setSymbol(arg1, adrressAscii, arg1.length + 1)
                         break
                     case '.space':
+                    case '.skip':
                         const spaceSize = parseInt(arg1, 10)
                         const addressSpace = memory.allocate(spaceSize)
                         memory.set(addressSpace, spaceSize)
                         symbolTable.setSymbol(arg1, addressSpace, spaceSize)
                         break
+                        
                     default:
                         console.warn(`Unknown directive: ${res}`)
                         break    

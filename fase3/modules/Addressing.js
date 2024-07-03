@@ -6,7 +6,7 @@ class Addressing{
         this.instruction = instruction
         this.errors = []
     }
-    run(registers, specialRegisters, memory, stack, flag, symbolTable){
+    run(registers, specialRegisters, memory, stack, flag, symbolTable, instructions){
         if (this.instruction === null) {
             console.log("Instruction is null");
             return;
@@ -19,11 +19,12 @@ class Addressing{
             if(typeOfArg(this.instruction.res) !== cons.REG){
                 this.errors.push({type: "Error semantico ",line:this.specialRegisters.PC,column:"0",message:`Error, debe utilizar un registro : ${this.instruction.res} `})
             }
-            //console.log(specialRegisters.PC)
-            //console.log(symbolTable)
-            let registroDestino = this.instruction.res
-            let val = this.instruction.arg1 //cargará el valor (que tiene en memoria la etiqueta) a registroDestino
-            //console.log(val)
+            let val = symbolTable.getSymbol(this.instruction.arg1.slice(1))
+            let quad = instructions[val.address]
+            if(quad.opCode === cons.DIRECTIVE){
+                let memoriAdress = symbolTable.getSymbol(quad.arg1).address
+                registers.setRegister(this.instruction.res, memoriAdress)
+            }
         }
         if(this.instruction.opCode === cons.SVC){ //Llamada al sistema
             /*
@@ -39,7 +40,15 @@ class Addressing{
             console.log("ldrb")
         }
         if(this.instruction.opCode === cons.STRB){
-            console.log("strb")
+            //console.log("strb")
+            if(typeOfArg(this.instruction.res) !== cons.REG){
+                this.errors.push({type: "Error semantico ",line:this.specialRegisters.PC,column:"0",message:`Error, debe utilizar un registro : ${this.instruction.res} `})
+            }
+            if(typeOfArg(this.instruction.arg1) === cons.REG){ //cuaddo solo hay un registro base
+                let val = registers.getRegister(this.instruction.res)
+                let destino = registers.getRegister(this.instruction.arg1)
+                memory.set(destino,val)
+            }
         }
     }
 
