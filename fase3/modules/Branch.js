@@ -46,6 +46,11 @@ class Branch{
             console.log("ble")
            }
         }
+        if(this.instruction.opCode === cons.BNE){// Z = 0
+            if(Z === 0){
+                console.log("Z=0, entra a BNE")
+            }
+        }
     }
 }
 export {Branch}

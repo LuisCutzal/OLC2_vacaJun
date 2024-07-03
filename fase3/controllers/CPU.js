@@ -7,7 +7,7 @@ import { Branch } from '../modules/Branch.js'
 import { Conditional } from '../modules/Conditional.js'
 import { SymbolTable } from '../modules/SymbolTable.js'
 import { DataAndDeclaration } from '../modules/DataAndDeclaration.js'
-
+import { Addressing } from '../modules/Addressing.js'
 let errors = []
 
 //flags for ARMv8-A
@@ -46,6 +46,7 @@ class CPU {
         this.logical = new Logical(null);
         this.branch = new Branch(null);
         this.conditional = new Conditional(null);
+        this.addressing = new Addressing(null);
     }
     run() {//initialization
         this.init();
@@ -138,9 +139,6 @@ class CPU {
                     this.logical.instruction = op;
                     this.logical.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
-
-
-
                 /*****************Branch Instructions***********************/
                 if(op.opCode == c.BLT){ //ramificación si menor que 
                     this.branch.instruction = op;
@@ -150,11 +148,11 @@ class CPU {
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
-                if (op.opCode == c.BNE) {
+                if (op.opCode == c.BNE) {//Branch if Not Equal
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
-                if (op.opCode == c.BLE) {
+                if (op.opCode == c.BLE) { //branch if less than or equal
                     this.branch.instruction = op;
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
@@ -163,12 +161,27 @@ class CPU {
                     this.branch.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag);
                 }
                 /*****************Conditional Instructions***********************/
-                if (op.opCode == c.CSEL) {
+                if (op.opCode == c.CSEL) { //Conditional Select
                     this.conditional.instruction = op;
                     this.conditional.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
                 /*****************Addressing Modes***********************/
-
+                if(op.opCode == c.LDR){
+                    this.addressing.instruction = op;
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.SVC){
+                    this.addressing.instruction = op;
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.LDRB){
+                    this.addressing.instruction = op;
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
+                if(op.opCode == c.STRB){
+                    this.addressing.instruction = op;
+                    this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
+                }
             }
         }
 
@@ -179,12 +192,12 @@ export { CPU }
 
 /*
 -----
-ldr
-svc
-ldrb
-beq
-b
-bne
-strb
+ldr***
+svc***
+ldrb ***
+beq ***
+b ***
+bne ***
+strb ***
 
 */

@@ -151,7 +151,6 @@ class Conditional {
             }
             if(conditional == "AL"){ //AL -> siempre seleccionara el primer argumento 
                 rd = rn;
-                console.log("entro a AL")
             }
             registers.setRegister(this.instruction.res, parseInt(rd))
         }
