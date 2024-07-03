@@ -4,9 +4,10 @@ import { quads, generateQuads } from './modules/quad.js'
 import { Registers, specialRegisters } from './modules/registers.js'
 import { CPU } from './controllers/CPU.js'
 import { Memory, Stack } from './modules/memory.js'
+import { DataAndDeclaration } from '../modules/DataAndDeclaration.js'
 
 
-let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [];
+let errorTable, symbolTable, Arm64Editor, consoleResult, dotStringCst = "", currentStr = "", Arm64Editors = [], currentCPU, lastPCIndex = 0;
 
 $(document).ready(function () {
     addTab();
@@ -69,11 +70,6 @@ function addTab() {
 function showSelectedTab(id) {
     //Actualizar el editor del que se extraerá el texto para el análisis
     Arm64Editor = Arm64Editors[id];
-
-    // Mostrar la línea actual
-    //Arm64Editor.addLineClass(2, "background", "highlighted-line");
-    Arm64Editor.addLineClass(1, "background", "highlighted-line");
-    //lineElement.className += "highlited-line";
 
     //mostrar todas las pestañas
     let btns = document.querySelectorAll(".LEditor .textEditor .buttonTab");
@@ -320,17 +316,23 @@ const assembly = async () => {
             generateCST(resultado.getDot(resultado));
             generateQuads(resultado);
             addQuadsToTable();
-            /*
-            let cpu = new CPU();
-            cpu.instructions = quads;
-            cpu.run();
-            listErrorsSemanticos = cpu.errors
-            //console.log(cpu.errors)
-            showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
-            showMemory(cpu.memory);*/
+            debugEditorContent();
+
+            currentCPU = new CPU();
+            currentCPU.instructions = quads;
+
+            showRegisters(currentCPU.registers, currentCPU.specialRegisters, currentCPU.flag);
+            showMemory(currentCPU.memory);
+
+            currentCPU.init();
+
+            //label and const data in memory processing in memory
+            let dataAndDeclaration = new DataAndDeclaration(currentCPU.instructions, currentCPU.specialRegisters);
+            dataAndDeclaration.run(currentCPU.memory, currentCPU.symbolTable);
+
         }
 
-        if (errors.length > 0 || listErrorsSemanticos.length > 0) {
+        if (errors.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             errors.forEach(error => {
                 const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
@@ -338,13 +340,6 @@ const assembly = async () => {
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
                 addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
             });
-            // listErrorsSemanticos.forEach(error => {
-            //     const errorType = error.type
-            //     let errorMessage = error.message
-            //     const errorLine = `Fila: ${error.line}`
-            //     const errorCol = `Columna: ${error.column}`;
-            //     addErrorToTable(errorType, errorLine, errorCol, errorMessage);
-            // });
         } else {
             consoleResult.setValue("VALIDO");
         }
@@ -378,7 +373,7 @@ const assembly = async () => {
 
 };
 
-function end() {
+const end = async () => {
     let cpu = new CPU();
     cpu.instructions = quads;
     cpu.run();
@@ -401,28 +396,74 @@ function end() {
     }
 }
 
-function step() {
-    let cpu = new CPU();
-    cpu.instructions = quads;
-    cpu.step();
-    let listErrorsSemanticos = cpu.errors
-    //console.log(cpu.errors)
-    showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
-    showMemory(cpu.memory);
+const step = async () => {
 
-    if (listErrorsSemanticos.length > 0) {
-        consoleResult.setValue("Error, ver tabla de errores");
-        listErrorsSemanticos.forEach(error => {
-            const errorType = error.type
-            let errorMessage = error.message
-            const errorLine = `Fila: ${error.line}`
-            const errorCol = `Columna: ${error.column}`;
-            addErrorToTable(errorType, errorLine, errorCol, errorMessage);
-        });
-    } else {
-        consoleResult.setValue("VALIDO");
+    if (currentCPU.specialRegisters.PC < quads.length) {
+        lastPCIndex = currentCPU.specialRegisters.PC;
+        currentCPU.step();
+        // Mostrar la línea actual
+        Arm64Editor.removeLineClass(lastPCIndex - 1, "background", "highlighted-line");
+        Arm64Editor.addLineClass(currentCPU.specialRegisters.PC - 1, "background", "highlighted-line");
+
+        let listErrorsSemanticos = currentCPU.errors
+
+        showRegisters(currentCPU.registers, currentCPU.specialRegisters, currentCPU.flag);
+        showMemory(currentCPU.memory);
+
+        if (listErrorsSemanticos.length > 0) {
+            consoleResult.setValue("Error, ver tabla de errores");
+            listErrorsSemanticos.forEach(error => {
+                const errorType = error.type
+                let errorMessage = error.message
+                const errorLine = `Fila: ${error.line}`
+                const errorCol = `Columna: ${error.column}`;
+                addErrorToTable(errorType, errorLine, errorCol, errorMessage);
+            });
+        } else {
+            consoleResult.setValue("VALIDO");
+        }
     }
+
 }
+
+function debugEditorContent() {
+    let content = "";
+    for (const q of quads) {
+        if (q.op === 'Directive') {
+            content += q.res
+            content += (q.arg1 === '-') ? '' : " " + q.arg1;
+            content += (q.arg2 === '-') ? '' : " " + q.arg2;
+            content += (q.arg3 === '-') ? '' : " " + q.arg3;
+
+        } else if (q.op === 'Section') {
+            content += q.res
+            content += (q.arg1 === '-') ? '' : " " + q.arg1;
+            content += (q.arg2 === '-') ? '' : " " + q.arg2;
+            content += (q.arg3 === '-') ? '' : " " + q.arg3;
+            content += ":"
+
+        } else if (q.op === 'SVC') {
+            content += "    " + q.op;
+            content += (q.arg1 === '-') ? '' : " " + q.arg1;
+            content += (q.arg2 === '-') ? '' : ", " + q.arg2;
+            content += (q.arg3 === '-') ? '' : ", " + q.arg3;
+            content += (q.res === '-') ? '' : ", " + q.res;
+
+
+        } else {
+            content += "    " + q.op;
+            content += (q.res === '-') ? '' : " " + q.res;
+            content += (q.arg1 === '-') ? '' : ", " + q.arg1;
+            content += (q.arg2 === '-') ? '' : ", " + q.arg2;
+            content += (q.arg3 === '-') ? '' : ", " + q.arg3;
+
+        }
+        content += "\n";
+    }
+
+    Arm64Editor.setValue(content);
+}
+
 
 
 function cleanErrorsTable() {
