@@ -8,7 +8,7 @@ import { Conditional } from '../modules/Conditional.js'
 import { SymbolTable } from '../modules/SymbolTable.js'
 import { DataAndDeclaration } from '../modules/DataAndDeclaration.js'
 import { Addressing } from '../modules/Addressing.js'
-let errors = []
+
 
 //flags for ARMv8-A
 const flag = {
@@ -21,6 +21,7 @@ const flag = {
 class CPU {
     constructor() {
         this.registers = new Registers();
+        this.errors = [] //{type, line, column, message}
         this.specialRegisters = new specialRegisters();
         this.memory = new Memory(32 * 1024);
         this.stack = new Stack();
@@ -61,6 +62,7 @@ class CPU {
                 let op = this.instructions[this.specialRegisters.PC]
                 //console.log(op);
                 this.specialRegisters.PC += 1;
+                this.registers.PC = this.specialRegisters.PC
                 //execute
                 /*-----------------Arithmetic Instructions---------------*/
                 if (op.opCode == c.ADD) {
@@ -170,7 +172,7 @@ class CPU {
                     this.addressing.instruction = op;
                     this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
-                if(op.opCode == c.SVC){
+                if(op.opCode == c.SVC){ //Supervisor Call
                     this.addressing.instruction = op;
                     this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag)
                 }
@@ -184,7 +186,7 @@ class CPU {
                 }
             }
         }
-
+        this.errors = this.registers.errors
     }
 }
 

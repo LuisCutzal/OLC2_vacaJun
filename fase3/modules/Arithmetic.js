@@ -24,19 +24,19 @@ class Arithmetic {
         if (this.instruction.opCode === cons.ADD) {
             let value = 0
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.REG) {
-                value = parseInt(registers.getRegister(this.instruction.arg1)) + parseInt(registers.getRegister(this.instruction.arg2));
+                value =  (registers.getRegister(this.instruction.arg1)) +  (registers.getRegister(this.instruction.arg2));
             }
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.NUM) {
-                value = parseInt(registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
+                value =  (registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
             }
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.D_NUM) {
-                value = parseInt(registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
+                value =  (registers.getRegister(this.instruction.arg1)) + parseNum(this.instruction.arg2);
             }
             if (value == 0) {
                 flag.Z = 1
             }
             //tambien modifica la bandera C y N
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res,  (value));
         }
         if (this.instruction.opCode === cons.ADDS) {
             console.log("ADDS");
@@ -81,7 +81,7 @@ class Arithmetic {
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.NUM) {
                 reg1 = this.instruction.arg1;
                 res = parseNum(this.instruction.arg2)
-                valR1 = parseInt(registers.getRegister(this.instruction.arg1))
+                valR1 =  (registers.getRegister(this.instruction.arg1))
                 valor = valR1 - res 
                 if (valor < 0) {
                     flag.N = 1
@@ -101,7 +101,7 @@ class Arithmetic {
             if (typeOfArg(this.instruction.arg1) === cons.REG && typeOfArg(this.instruction.arg2) === cons.D_NUM) {
                 reg1 = this.instruction.arg1;
                 res = parseNum(this.instruction.arg2)
-                valR1 = parseInt(registers.getRegister(this.instruction.arg1))
+                valR1 =  (registers.getRegister(this.instruction.arg1))
                 valor = valR1 - res
                 if (valor < 0) {
                     flag.N = 1
@@ -126,8 +126,8 @@ class Arithmetic {
                 console.log("Invalid instruction"); //error sintactico
                 return;
             }
-            valMul = parseInt(registers.getRegister(this.instruction.arg1)) * parseInt(registers.getRegister(this.instruction.arg2));
-            value = parseInt(registers.getRegister(this.instruction.arg3)) - valMul;
+            valMul =  (registers.getRegister(this.instruction.arg1)) *  (registers.getRegister(this.instruction.arg2));
+            value =  (registers.getRegister(this.instruction.arg3)) - valMul;
             if (value == 0) {
                 flag.Z = 1;
             }
@@ -135,7 +135,7 @@ class Arithmetic {
             if (value < 0) {
                 flag.N = 1;
             }
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res,  (value));
         }
         if (this.instruction.opCode === cons.MUL) {
             let value = 0;
@@ -148,12 +148,12 @@ class Arithmetic {
             if(typeOfArg(this.instruction.arg1) != cons.REG){
                 reg1 = this.instruction.arg1
             }else{
-                reg1 = parseInt(registers.getRegister(this.instruction.arg1))
+                reg1 = (registers.getRegister(this.instruction.arg1))
             }
             if(typeOfArg(this.instruction.arg2) != cons.REG){
                 reg2 = this.instruction.arg2
             }else{
-                reg2 = parseInt(registers.getRegister(this.instruction.arg2))
+                reg2 = (registers.getRegister(this.instruction.arg2))
             }
             value = reg1 * reg2;
             if (value == 0) {
@@ -163,7 +163,7 @@ class Arithmetic {
             if (value < 0) {
                 flag.N = 1;
             }
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res, (value));
         }
         if (this.instruction.opCode === cons.SDIV) {
             let value = 0;
@@ -171,16 +171,16 @@ class Arithmetic {
                 console.log("Invalid instruction");
                 return;
             }
-            value = parseInt(registers.getRegister(this.instruction.arg1)) / parseInt(registers.getRegister(this.instruction.arg2));
-            registers.setRegister(this.instruction.res, parseInt(value));
+            value =  (registers.getRegister(this.instruction.arg1)) /  (registers.getRegister(this.instruction.arg2));
+            registers.setRegister(this.instruction.res,  (value));
 
-            if (parseInt(value) < 0) {
+            if ( (value) < 0) {
                 flag.N = 1;
             }
-            if (parseInt(value) >= 0) {
+            if ( (value) >= 0) {
                 flag.N = 0;
             }
-            if (parseInt(value) != 0) {
+            if ( (value) != 0) {
                 flag.Z = 0
             } else {
                 flag.Z = 1
@@ -194,12 +194,12 @@ class Arithmetic {
             if(typeOfArg(this.instruction.arg1) != cons.REG){
                 reg1 = this.instruction.arg1
             }else{
-                reg1 = parseInt(registers.getRegister(this.instruction.arg1));
+                reg1 =  (registers.getRegister(this.instruction.arg1));
             }
             if(typeOfArg(this.instruction.arg2) != cons.REG){
                 reg2 = this.instruction.arg2
             }else{
-                reg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                reg2 =  (registers.getRegister(this.instruction.arg2));
             }
             value = reg1 - reg2;
             if (value == 0) {
@@ -219,7 +219,7 @@ class Arithmetic {
             } else {
                 flag.V = 0; // No hay desbordamiento
             }
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res,  (value));
         }
         if (this.instruction.opCode === cons.UDIV) {
             let value = 0;
@@ -229,22 +229,22 @@ class Arithmetic {
                 console.log("Invalid instruction");
                 return;
             } else {
-                arg1 = parseInt(registers.getRegister(this.instruction.arg1));
-                arg2 = parseInt(registers.getRegister(this.instruction.arg2));
+                arg1 =  (registers.getRegister(this.instruction.arg1));
+                arg2 =  (registers.getRegister(this.instruction.arg2));
             }
-            if (parseInt(registers.getRegister(this.instruction.arg1)) < 0) {
+            if ( (registers.getRegister(this.instruction.arg1)) < 0) {
                 arg1 = -arg1;
             }
-            if (parseInt(registers.getRegister(this.instruction.arg2)) < 0) {
+            if ( (registers.getRegister(this.instruction.arg2)) < 0) {
                 arg2 = -arg2;
             }
             value = arg1 / arg2;
-            if (parseInt(value) != 0) {
+            if ( (value) != 0) {
                 flag.Z = 0
             } else {
                 flag.Z = 1
             }
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res,  (value));
         }
     }
 }

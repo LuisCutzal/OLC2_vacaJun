@@ -11,13 +11,16 @@ class Registers {
             v: new Array(32).fill(0n), // 128 bits single precision floating point  
         }
         this.errors = [] //{type, line, column, message}
+        this.PC = 0;
     }
 
     //parse register name to typeRegister and index
     parseRegister(regString) {
         const match = regString.match(/^([a-z]+)(\d+)$/)
         if (!match) {
-            throw new Error(`Invalid register string: ${regString}`)
+            this.errors.push("Error semantico ",this.PC,"0",`Invalid register string: ${regString}`)
+            return;
+            //throw new Error(`Invalid register string: ${regString}`)
         }
         return {
             type: match[1],
@@ -44,39 +47,76 @@ class Registers {
                 case 'x': // 64 bits integer
                 case 'd': // 64 bits double precision floating point
                     value = BigInt(value);
+
                     if (value < -0x8000000000000000n || value > 0x7FFFFFFFFFFFFFFFn) {
-                        throw new Error(`Value out of range for 64-bit register: ${value}`);
+                        this.errors.push({type: "Error semantico ",line:this.PC,column:"0",message:`Value out of range for 64-bit register ${type+index}: ${value} `})
+                        //throw new Error(`Value out of range for 64-bit register: ${value}`);
+                        return
+                    }
+                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFn) {
+                        this.errors.push({type: "Error semantico ",line:this.PC,column:"0",message:`Value out of range for 64-bit register ${type+index}: ${value} `})
+                        return
+                        //throw new Error(`Value out of range for 64-bit register: ${value}`);
+
                     }
                     this.registers[type][index] = value;
                     break;
                 case 'w': // 32 bits integer
                 case 's': // 32 bits single precision floating point
+
                     value = Number(value);
                     if (value < -0x80000000 || value > 0x7FFFFFFF) {
-                        throw new Error(`Value out of range for 32-bit register: ${value}`);
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 32-bit register ${type+index}: ${value}`})
+                        return
+                    }
+                    if (value < 0 || value > 0xFFFFFFFF) {
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 32-bit register ${type+index}: ${value}`})
+                        return
+                        //throw new Error(`Value out of range for 32-bit register: ${value}`);
+
                     }
                     this.registers[type][index] = value;
                     break;
                 case 'h': // 16 bits integer
+
                     value = Number(value);
                     if (value < -0x8000 || value > 0x7FFF) {
-                        throw new Error(`Value out of range for 16-bit register: ${value}`);
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 16-bit register: ${value}`})
+                        return
+                    }
+                    if (value < 0 || value > 0xFFFF) {
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 16-bit register: ${value}`})
+                        return
+                        //throw new Error(`Value out of range for 16-bit register: ${value}`);
+
                     }
                     this.registers[type][index] = value;
                     break;
                 case 'q': // 128 bits integer
                 case 'v': // 128 bits single precision floating point
                     value = BigInt(value);
+
                     if (value < -0x80000000000000000000000000000000n || value > 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
-                        throw new Error(`Value out of range for 128-bit register: ${value}`);
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 128-bit register: ${value}`})
+                        return
+                    }
+                    if (value < 0n || value > 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFn) {
+                        this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Value out of range for 128-bit register: ${value}`})
+                        return
+                        //throw new Error(`Value out of range for 128-bit register: ${value}`);
+
                     }
                     this.registers[type][index] = value;
                     break;
                 default:
-                    throw new Error(`Unknown register type: ${type}`);
+                    this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:`Unknown register type: ${type}`})
+                    return
+                    //throw new Error(`Unknown register type: ${type}`);
             }
         } else {
-            throw new Error('Invalid typeRegister or index out of range');
+            this.errors.push({type:"Error semantico ",line:this.PC,column:"0",message:'Invalid typeRegister or index out of range'})
+            return
+            //throw new Error('Invalid typeRegister or index out of range');
         }
     }
     //Optional: Method to get hex respresentation all of registers

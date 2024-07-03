@@ -231,7 +231,7 @@ const analysis = async () => {
     cleanErrorsTable();
     cleanQuadsTable();
     errorCounter = 0;
-
+    let listErrorsSemanticos = []
     try {
         let resultado = parse(text);
         let errors = resultado["errors"]
@@ -243,17 +243,26 @@ const analysis = async () => {
             let cpu = new CPU();
             cpu.instructions = quads;
             cpu.run();
+            listErrorsSemanticos = cpu.errors
+            //console.log(cpu.errors)
             showRegisters(cpu.registers, cpu.specialRegisters, cpu.flag);
             showMemory(cpu.memory);
-        }
+        }       
 
-        if (errors.length > 0) {
+        if (errors.length > 0 || listErrorsSemanticos.length > 0) {
             consoleResult.setValue("Error, ver tabla de errores");
             errors.forEach(error => {
                 const errorType = error.message.includes("Unrecognized input") ? 'Sintáctico' : 'Lexico';
                 let errorMessage = error.message.replace(new RegExp(',', 'g'), '');
                 const errorLocation = `Fila: ${error.location.start.line}, Columna: ${error.location.start.column}`;
                 addErrorToTable(errorType, error.location.start.line, error.location.start.column, errorMessage);
+            });
+            listErrorsSemanticos.forEach(error =>{
+                const errorType = error.type
+                let errorMessage = error.message
+                const errorLine = `Fila: ${error.line}`
+                const errorCol =  `Columna: ${error.column}`;
+                addErrorToTable(errorType, errorLine, errorCol, errorMessage);
             });
         } else {
             consoleResult.setValue("VALIDO");
