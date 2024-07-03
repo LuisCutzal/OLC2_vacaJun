@@ -19,21 +19,21 @@ class Logical {
         if (this.instruction.opCode === cons.MOV) {
             let value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                value = parseInt(registers.getRegister(this.instruction.arg1))
+                value = registers.getRegister(this.instruction.arg1)
             }
             if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
-                value = parseInt(parseNum(this.instruction.arg1));
+                value = parseNum(this.instruction.arg1);
             }
-            registers.setRegister(this.instruction.res, parseInt(value));
+            registers.setRegister(this.instruction.res, value);
         }
 
         if (this.instruction.opCode === cons.MVN) {
             let value = 0;
             if (typeOfArg(this.instruction.arg1) === cons.REG) {
-                value = parseInt(registers.getRegister(this.instruction.arg1))
+                value = registers.getRegister(this.instruction.arg1)
             }
             if (typeOfArg(this.instruction.arg1) === cons.NUM || typeOfArg(this.instruction.arg1) === cons.D_NUM) {
-                value = parseInt(parseNum(this.instruction.arg1));
+                value = parseNum(this.instruction.arg1);
             }
             value = ~value;
 
