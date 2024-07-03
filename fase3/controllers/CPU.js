@@ -218,7 +218,7 @@ class CPU {
                 }
             }
         }
-        this.errors.concat(this.registers.errors)
+        this.errors = this.errors.concat(this.registers.errors)
     }
 
     step() {
@@ -377,7 +377,7 @@ class CPU {
             this.addressing.run(this.registers, this.specialRegisters, this.memory, this.stack, this.flag, this.symbolTable, this.instructions)
         }
 
-        this.errors.concat(this.registers.errors)
+        this.errors = this.errors.concat(this.registers.errors)
     }
 }
 
